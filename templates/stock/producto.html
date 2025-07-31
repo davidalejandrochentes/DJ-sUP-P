@@ -1,0 +1,77 @@
+{% extends "layout/base.html" %}
+
+{% load static %}
+
+{% block 'title'%} Producto {% endblock %}
+
+{% block 'activo-stock' %}activo{% endblock %}
+{% block 'activador-stock' %}activo{% endblock %}
+
+{% block 'content' %}
+<div class="container mt-4">
+
+    <div class="container d-flex">
+        <a class="morado" href="{% url "lista_productos" id=producto.categoría.id %}" role="button">  
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+            </svg>
+        </a>
+    </div>
+
+    <h1 class="text-center">{{ producto.nombre }}</h1>
+    <div class="d-flex justify-content-center align-items-center">
+        <div class=" p-4 rounded-3 sombra borde bg-body-tertiary">
+            <img class="d-block mx-auto my-2" src="{% static "images/product-plus.png" %}">
+            <p class="m-1"><b>Nombre:</b> {{ producto.nombre }}</p>
+            <p class="m-1"><b>Código:</b> {{ producto.código }}</p>
+            <p class="m-1"><b>Categoría:</b> {{ producto.categoría }}</p>
+            <p class="m-1"><b>Proveedor:</b>
+                {% if producto.proveedor == None %}
+                    <span class="text-danger">Eliminado</span>
+                {% else %}
+                    {{ producto.proveedor }}
+                {% endif %}
+            </p>
+            <p class="m-1"><b>Descripción:</b> 
+                {% if producto.descripción == None %}
+                    Sin descripción
+                {% else %}
+                    {{ producto.descripción }}
+                {% endif %}
+            </p>
+            <p class="m-1"><b>Precio de adquisición:</b> {{ producto.precio_de_adquisición }}</p>
+            <p class="m-1"><b>Precio de venta:</b> {{ producto.precio_de_venta }}</p>
+            <p class="m-1"><b>Unidad de medida:</b> {{ producto.unidad_de_medida }}</p>
+            <p class="m-1"><b>Stock:</b> {{ producto.stock }}</p>
+            <p class="m-1"><b>Alerta stock bajo:</b> {{ producto.alerta_stock }}</p>
+            <a class="btn boton btn-sm m-1" href="{% url "editar_producto" id=producto.id %}" role="button">
+                Editar
+                <img class="" src="{% static "images/pages.png" %}">
+            </a>
+            <button type="button" class="btn btn-danger rounded-pill btn-sm m-1" data-bs-toggle="modal" data-bs-target="#modal-eliminar">
+                Eliminar 
+                <img class="" src="{% static "images/trash.png" %}">
+            </button>
+            <div class="modal fade" id="modal-eliminar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Atención</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Esta seguro de <b>eliminar</b> el producto <b>{{ producto.nombre }}</b>
+                        <p class="mt-2"><b>Si elimina este producto tambien se eliminaran su historial de ventas</b></p>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-danger rounded-pill" href="{% url "eliminar_producto" id=producto.id %}">Estoy seguro</a>
+                        <button type="button" class="btn boton" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

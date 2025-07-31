@@ -1,0 +1,242 @@
+{% extends "layout/base.html" %}
+
+{% load static %}
+
+{% block 'title'%} Proveedores {% endblock %}
+
+{% block 'activo-proveedores' %}activo{% endblock %}
+{% block 'activador-proveedores' %}activo{% endblock %}
+
+
+{% block 'search' %}
+<form class="form-inline mw-100 navbar-search mx-auto d-none d-md-block" role="search" action="" method='GET'>
+    <div class="input-group d-flex" id="search-input">
+        <input class="form-control bg-light borde small" name="search" type="search" placeholder="Nombre, Etiqueta o Móvil" aria-label="Search">
+        <div class="input-group-append borde rounded-end">
+            <button class="btn ojo text-light rounded-0 rounded-end border" type="submit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block 'content' %}
+<div class="container">
+    <div id="nombre-pagina" class="container mt-4 mt-sm-5 activo pt-3 pb-3 sombra d-flex justify-content-center">
+        <div class="d-flex flex-column align-items-center">
+            <h2 class="text-center suptitle">Proveedores</h2>
+            <p class="text-center text-white mt-0 mb-2" id="cantidad-proveedor">Cantidad de proveedores: {{ total }}</p>
+            <button id="start-tour" class="btn btn-outline-light rounded-pill mb-2">Iniciar Recorrido <img src="{% static "images/video-camera.png" %}"></button>
+        </div>
+    </div>
+</div>
+
+<div id="botones" class="container d-flex justify-content-center mt-2">
+    <a class="btn btn-sm boton me-2" href="{% url "nuevo_proveedor" %}" role="button" id="btn-nuevo-proveedor">  
+        Nuevo 
+        <img src="{% static "images/new.png" %}"> 
+    </a>
+    <a href="{% url 'exportar_proveedores_excel' %}" class="btn btn-sm boton rounded-pill" id="exportar_proveedores">
+        Exportar proveedores <img src="{% static 'images/excel.png' %}">
+    </a>
+</div>
+
+<div id="search" class="container">
+    <form class="form-inline mw-100 navbar-search mx-auto d-block d-lg-none mt-3" role="search" action="" method='GET'>
+        <div class="input-group d-flex" id="search-mobile">
+            <input class="form-control bg-light borde small" name="search" type="search" placeholder="Nombre, Etiqueta o Móvil" aria-label="Search">
+            <div class="input-group-append borde rounded-end">
+                <button class="btn ojo text-light rounded-0 rounded-end border" type="submit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="container mt-4">
+    <div class="row text-center justify-content-center px-5 px-sm-0" id="proveedores">
+        {% for proveedor in proveedores %}
+        <div class="col-12 col-xl-2 sombra borde m-2 carta" id="proveedor">
+            <a class="text-decoration-none" href="{% url "proveedor" id=proveedor.id %}">
+                <div class="testimonial-card p-4">
+                    <p class="m-0"><strong>{{ proveedor.nombre }}</strong></p>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Controles de paginación -->
+<div class="pagination mt-2 justify-content-center">
+    <nav aria-label="Page navigation" id="pagination">
+        <ul class="pagination justify-content-center">
+            {% if proveedores.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ proveedores.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% for num in proveedores.paginator.page_range %}
+            <li class="page-item {% if proveedores.number == num %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">{{ num }}</a>
+            </li>
+            {% endfor %}
+            
+            {% if proveedores.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ proveedores.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const driver = window.driver.js.driver;
+        
+        // Detectar si es móvil
+        const isMobile = window.innerWidth <= 992;
+
+        // Pasos para escritorio
+        const stepsDesktop = [
+            {
+                element: '#search-input',
+                popover: {
+                    title: 'Buscar proveedores',
+                    description: 'Puedes buscar por nombre, etiqueta asignadas o móvil.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#cantidad-proveedor',
+                popover: {
+                    title: 'Cantidad total de proveedores',
+                    description: 'Esta es la cantidad total de los proveedores registrados por usted.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#btn-nuevo-proveedor',
+                popover: {
+                    title: 'Nuevo proveedor',
+                    description: 'Haz clic aquí para acceder al formulario de registro de un nuevo proveedor.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#exportar_proveedores',
+                popover: {
+                    title: 'Exportar proveedores',
+                    description: 'Exportará un fichero Excel con toda la información de los proveedores registrados.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#proveedores',
+                popover: {
+                    title: 'Listado de proveedores',
+                    description: 'Esta es la lista completa de todos los proveedores registrados. Toca en cualquier proveedor para ver sus detalles.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#pagination',
+                popover: {
+                    title: 'Paginación',
+                    description: 'Puedes navegar entre las páginas para ver todos los datos.',
+                    position: 'bottom'
+                }
+            }
+        ];
+
+        // Pasos para móvil
+        const stepsMobile = [
+            {
+                element: '#cantidad-proveedor',
+                popover: {
+                    title: 'Cantidad total de proveedores',
+                    description: 'Esta es la cantidad total de los proveedores registrados por usted.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#btn-nuevo-proveedor',
+                popover: {
+                    title: 'Nuevo proveedor',
+                    description: 'Haz clic aquí para acceder al formulario de registro de un nuevo proveedor.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#exportar_proveedores',
+                popover: {
+                    title: 'Exportar proveedores',
+                    description: 'Exportará un fichero Excel con toda la información de los proveedores registrados.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#search-mobile', 
+                popover: {
+                    title: 'Búsqueda',
+                    description: 'Puedes buscar por nombre, etiqueta asignadas o móvil.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#proveedor',
+                popover: {
+                    title: 'Listado de proveedores',
+                    description: 'Esta es la lista completa de todos los proveedores registrados. Toca en cualquier proveedor para ver sus detalles.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#pagination',
+                popover: {
+                    title: 'Paginación',
+                    description: 'Puedes navegar entre las páginas para ver todos los datos.',
+                    position: 'bottom'
+                }
+            }
+        ];
+
+        // Inicializar el tour con los pasos correspondientes
+        const tour = driver({
+            showProgress: true,
+            showButtons: ['next', 'previous', 'close'],
+            steps: isMobile ? stepsMobile : stepsDesktop
+        });
+    
+        const startBtn = document.getElementById("start-tour");
+        if (startBtn) {
+            startBtn.addEventListener("click", function () {
+                tour.drive();
+            });
+        }
+    });
+
+    // Actualizar el tour cuando cambie el tamaño de la ventana
+    window.addEventListener('resize', function() {
+        const isMobile = window.innerWidth <= 992;
+        if (driver.instance) {
+            driver.instance.reset();
+            driver.instance.defineSteps(isMobile ? stepsMobile : stepsDesktop);
+        }
+    });
+</script>
+    
+
+{% endblock %}

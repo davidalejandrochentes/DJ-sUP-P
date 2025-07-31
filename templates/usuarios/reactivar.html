@@ -1,0 +1,160 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+
+{% block 'content' %}
+<div class="container mt-5 px-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 bg-body-tertiary p-4 rounded sombra borde">
+            <h2 class="text-center mb-4">Reactivación de Cuenta</h2>
+            
+            {% if success_message %}
+            <div class="alert alert-success mb-4" role="alert">
+                {{ success_message }}
+            </div>
+            {% endif %}
+            
+            <form method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="{{ form.usuario.id_for_label }}" class="form-label">{{ form.usuario.label }}</label>
+                    {{ form.usuario }}
+                    {% if form.usuario.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.usuario.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.nombre.id_for_label }}" class="form-label">{{ form.nombre.label }}</label>
+                    {{ form.nombre }}
+                    {% if form.nombre.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.nombre.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.apellido.id_for_label }}" class="form-label">{{ form.apellido.label }}</label>
+                    {{ form.apellido }}
+                    {% if form.apellido.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.apellido.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.teléfono.id_for_label }}" class="form-label">{{ form.teléfono.label }}</label>
+                    {{ form.teléfono }}
+                    {% if form.teléfono.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.teléfono.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.nro_transaccion.id_for_label }}" class="form-label">{{ form.nro_transaccion.label }}</label>
+                    {{ form.nro_transaccion }}
+                    {% if form.nro_transaccion.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.nro_transaccion.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn boton">Enviar Solicitud de Reactivación</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const usernameInput = document.getElementById('{{ form.usuario.id_for_label }}');
+        
+    // Convert username to lowercase when input changes
+    usernameInput.addEventListener('input', function() {
+        this.value = this.value.toLowerCase();
+    });
+});
+
+function validarTransferencia() {
+    const input = document.getElementById('{{ form.nro_transaccion.id_for_label }}');
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'invalid-feedback d-block';
+    errorDiv.style.display = 'none';
+    
+    // Limpiar mensajes de error previos
+    const existingError = input.parentNode.querySelector('.invalid-feedback');
+    if (existingError) {
+        existingError.remove();
+    }
+    input.parentNode.appendChild(errorDiv);
+    
+    const valor = input.value.trim().toUpperCase();
+    
+    // Validar longitud
+    if (valor.length === 0) {
+        errorDiv.textContent = 'El número de transferencia no puede estar vacío.';
+        errorDiv.style.display = 'block';
+        input.classList.add('is-invalid');
+        return false;
+    }
+    
+    if (valor.length > 13) {
+        errorDiv.textContent = 'El número de transferencia no puede exceder 13 caracteres.';
+        errorDiv.style.display = 'block';
+        input.classList.add('is-invalid');
+        return false;
+    }
+    
+    // Validar solo letras mayúsculas y números
+    const regex = /^[A-Z0-9]+$/;
+    if (!regex.test(valor)) {
+        errorDiv.textContent = 'El número de transacción solo puede contener letras mayúsculas y números.';
+        errorDiv.style.display = 'block';
+        input.classList.add('is-invalid');
+        return false;
+    }
+    
+    input.classList.remove('is-invalid');
+    return true;
+}
+
+// Agregar validación al evento submit del formulario
+const form = document.querySelector('form');
+if (form) {
+    form.addEventListener('submit', function(e) {
+        if (!validarTransferencia()) {
+            e.preventDefault();
+        }
+    });
+}
+
+// Agregar validación al evento input del campo transfer_number
+const transferInput = document.getElementById('{{ form.nro_transaccion.id_for_label }}');
+if (transferInput) {
+    transferInput.addEventListener('input', function() {
+        this.value = this.value.toUpperCase();
+        validarTransferencia();
+    });
+}
+</script>
+
+{% endblock %}

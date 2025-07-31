@@ -1,0 +1,441 @@
+{% extends "layout/base.html" %}
+
+{% load static %}
+
+{% block 'title'%} Listado de productos {% endblock %}
+
+{% block 'activo-stock' %}activo{% endblock %}
+{% block 'activador-stock' %}activo{% endblock %}
+
+
+{% block 'search' %}
+<form class="form-inline mw-100 navbar-search mx-auto d-none d-md-block" role="search" action="" method='GET'>
+    <div class="input-group d-flex" id="search-input">
+        <input class="form-control bg-light borde small" name="search" type="search" placeholder="Nombre o Código" aria-label="Search">
+        <div class="input-group-append borde rounded-end">
+            <button class="btn ojo text-light rounded-0 rounded-end border" type="submit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block 'content' %}
+<div class="container">
+    <div id="pagina" class="container mt-4 mt-sm-5 activo pt-3 pb-3 sombra">
+        <div class="d-flex flex-column align-items-center">
+            <div id="info-categoria">
+                <h2 class="text-center suptitle">Productos en la categoría {{ categoria.nombre }}</h2>
+                {% if categoria.descripción == None %}
+                    <p class="text-center text-white mt-0 mb-2">Sin descripción</p>
+                {% else %}
+                    <p class="text-center text-white mt-0 mb-2">{{ categoria.descripción }}</p>
+                {% endif %}
+            </div>
+            <p class="text-center text-white mt-0 mb-2" id="cantidad-productos">Cantidad de productos: {{ total }}</p>
+            <button id="start-tour" class="btn btn-outline-light rounded-pill mb-2">Iniciar Recorrido <img src="{% static "images/video-camera.png" %}"></button>
+        </div>
+    </div>
+</div>
+
+<div id="botones" class="container d-flex justify-content-between mt-2">
+    <a class="morado me-5" href="{% url "categorias_productos" %}" role="button">  
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+        </svg>
+    </a>
+
+    <span class="d-none d-sm-block">        
+        <a class="btn btn-sm boton m-1" href="{% url "productos_stock_bajo" id=categoria.id %}" role="button" id="bajo-stock">  
+            Bajo stock
+            <img class="" src="{% static "images/bell.png" %}">
+            <span class="bg-danger rounded-pill px-1">{{ total_alertas }}</span>
+        </a>
+        <a class="btn btn-sm boton m-1" href="{% url "nuevo_producto" id=categoria.id %}" role="button" id="nuevo">  
+            Nuevo producto
+            <img class="" src="{% static "images/box.png" %}"> 
+        </a>
+        <button type="button" class="btn btn-sm boton m-1" data-bs-toggle="modal" data-bs-target="#modal-editar-categoria{{ categoria.id }}" id="editar">
+            Editar categoría
+            <img class="" src="{% static "images/pages.png" %}">
+        </button>
+
+        <a href="{% url 'exportar_productos_categoria_excel' categoria.id %}" class="btn btn-sm boton m-1" id="exportar">
+            Exportar Datos <img src="{% static 'images/excel.png' %}">
+        </a>
+        
+        <button type="button" class="btn btn-sm btn-danger rounded-pill m-1" data-bs-toggle="modal" data-bs-target="#modal-eliminar-categoria{{ categoria.id }}" id="eliminar">
+            Eliminar categoría
+            <img class="" src="{% static "images/trash.png" %}">
+        </button>
+    </span>
+
+    <div class="btn-group d-block d-sm-none mt-1">
+        <button type="button" class="btn btn-sm boton rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="operaciones">
+            Operaciones
+            <img src="{% static 'images/double-tap.png' %}">
+        </button>
+        <ul class="dropdown-menu">
+            <li>
+                <a class="btn btn-sm boton m-1" href="{% url "productos_stock_bajo" id=categoria.id %}" role="button">  
+                    Bajo stock
+                    <img class="" src="{% static "images/bell.png" %}">
+                    <span class="bg-danger rounded-pill px-1">{{ total_alertas }}</span>
+                </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <a class="btn btn-sm boton m-1" href="{% url "nuevo_producto" id=categoria.id %}" role="button">  
+                    Nuevo producto
+                    <img class="" src="{% static "images/box.png" %}"> 
+                </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <button type="button" class="btn btn-sm boton m-1" data-bs-toggle="modal" data-bs-target="#modal-editar-categoria{{ categoria.id }}">
+                    Editar categoría
+                    <img class="" src="{% static "images/pages.png" %}">
+                </button>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <a href="{% url 'exportar_productos_categoria_excel' categoria.id %}" class="btn btn-sm boton m-1">
+                    Exportar Datos <img src="{% static 'images/excel.png' %}">
+                </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <button type="button" class="btn btn-sm btn-danger rounded-pill m-1" data-bs-toggle="modal" data-bs-target="#modal-eliminar-categoria{{ categoria.id }}">
+                    Eliminar categ...
+                    <img class="" src="{% static "images/trash.png" %}">
+                </button>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div id="search" class="container">
+    <form class="form-inline mw-100 navbar-search mx-auto d-block d-md-none mt-3" role="search" action="" method='GET'>
+        <div class="input-group d-flex" id="search-mobile">
+            <input class="form-control bg-light borde small" name="search" type="search" placeholder="Nombre o Código" aria-label="Search">
+            <div class="input-group-append borde rounded-end">
+                <button class="btn ojo text-light rounded-0 rounded-end border" type="submit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Vista móvil: lista vertical -->
+<div class="d-block mt-3 d-sm-none px-5">
+    {% for producto in productos %}
+    <div class="carta borde m-4 sombra" id="producto">
+        <a class="text-decoration-none" href="{% url "producto" id=producto.id %}">
+            <div class="card-body p-3 text-center">
+                <p class="mb-2 fs-3"><strong>{{ producto.nombre }}</strong></p>
+                <p class="mb-1"><strong>Proveedor:</strong> 
+                    {% if producto.proveedor == None %}
+                        <span class="text-danger">Eliminado</span>
+                    {% else %}
+                        {{ producto.proveedor }}
+                    {% endif %}
+                </p>
+                <p class="mb-1"><strong>Código:</strong> {{ producto.código }}</p>
+                <p class="mb-1"><strong>Unidad de medida:</strong> {{ producto.unidad_de_medida }}</p>
+                <p class="mb-1"><strong>Stock:</strong> {{ producto.stock }}</p>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Tabla de productos -->
+<div class="table-responsive container mt-4 d-none d-sm-block">
+    <table class="table table-hover" id="tabla">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Proveedor</th>
+                <th>Código</th>
+                <th>Unidad de medida</th>
+                <th>Stock</th>
+                <th>Detalles</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos %}
+                <tr>
+                    <td>{{ producto.nombre }}</td>
+                    <td>{% if producto.proveedor == None %}
+                            <span class="text-danger">Eliminado</span>
+                        {% else %}
+                            {{ producto.proveedor }}
+                        {% endif %}
+                    </td>
+                    <td>{{ producto.código }}</td>
+                    <td>{{ producto.unidad_de_medida }}</td>
+                    <td>{{ producto.stock }}</td>
+                    <td>
+                        <a class="btn boton btn-sm" href="{% url "producto" id=producto.id %}" role="button" id="acceder-tabla">
+                            Acceder
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Controles de paginación -->
+<div class="pagination mt-2 justify-content-center">
+    <nav aria-label="Page navigation" id="pagination">
+        <ul class="pagination justify-content-center">
+            {% if productos.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ productos.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% for num in productos.paginator.page_range %}
+            <li class="page-item {% if productos.number == num %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">{{ num }}</a>
+            </li>
+            {% endfor %}
+            
+            {% if productos.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ productos.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+<div class="modal fade" id="modal-editar-categoria{{ categoria.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Editar categoría {{ categoria.nombre }}</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form class="p-5 rounded-3 bg-body-tertiary sombra-login" action="" method='POST' enctype="multipart/form-data">
+                {% csrf_token %}
+                <table>
+                    {{ form }}
+                </table>
+                <div class="d-grid gap-2 mt-3">
+                    <button type="submit" class="btn boton">Guardar</button>
+                </div>
+            </form>
+        </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-eliminar-categoria{{ categoria.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Atención</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p>Esta seguro de <b>eliminar</b> la categoría <b>{{ categoria.nombre }}</b></p>
+            <p class="mt-2"><b>Si elimina la categoría tambien se eliminaran sus productos</b></p>
+        </div>
+        <div class="modal-footer">
+            <a class="btn btn-danger rounded-pill" href="{% url "eliminar_categoria" id=categoria.id %}">Estoy seguro</a>
+            <button type="button" class="btn boton" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const driver = window.driver.js.driver;
+        
+        // Detectar si es móvil
+        const isMobile = window.innerWidth <= 576;
+
+        // Pasos para escritorio
+        const stepsDesktop = [
+            {
+                element: '#search-input',
+                popover: {
+                    title: 'Buscar producto',
+                    description: 'Puedes buscar por nombre del producto o código',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#info-categoria',
+                popover: {
+                    title: 'Información de la categoría',
+                    description: 'Aquí puedes ver detalles de la categoría seleccionada.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#cantidad-productos',
+                popover: {
+                    title: 'Cantidad total de productos',
+                    description: 'Esta es la cantidad total de productos registrados en la categoría.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#bajo-stock',
+                popover: {
+                    title: 'Productos con bajo stock',
+                    description: 'Aquí puedes ver los productos que necesitan reposición debido a su bajo stock en la categoría.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#nuevo',
+                popover: {
+                    title: 'Nuevo producto',
+                    description: 'Haz clic aquí para crear un nuevo producto en la categoría.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#editar',
+                popover: {
+                    title: 'Editar producto',
+                    description: 'Haz clic aquí para modificar la información de la categoría.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#exportar',
+                popover: {
+                    title: 'Exportar productos',
+                    description: 'Exportará un fichero Excel con toda la información de los productos registrados en la categoría.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#eliminar',
+                popover: {
+                    title: 'Eliminar producto',
+                    description: 'Haz clic aquí para eliminar la categoría. Esta acción no se puede deshacer.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#tabla',
+                popover: {
+                    title: 'Listado de productos',
+                    description: 'Aquí puedes ver todos los productos registrados en la categoría.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#acceder-tabla',
+                popover: {
+                    title: 'Ver detalles de producto',
+                    description: 'Haz clic en cualquier producto para ver sus detalles completos, incluyendo stock, proveedor y unidad de medida.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#pagination',
+                popover: {
+                    title: 'Paginación',
+                    description: 'Esta es la paginación de los productos, puedes navegar entre las páginas para ver todos los productos del la categoría.',
+                    position: 'bottom'
+                }
+            }
+        ];
+
+        // Pasos para móvil
+        const stepsMobile = [
+            {
+                element: '#info-categoria',
+                popover: {
+                    title: 'Información de la categoría',
+                    description: 'Aquí puedes ver detalles de la categoría seleccionada.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#cantidad-productos',
+                popover: {
+                    title: 'Cantidad total de productos',
+                    description: 'Esta es la cantidad total de productos registrados en la categoría.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#operaciones',
+                popover: {
+                    title: 'Operaciones',
+                    description: 'Aquí puedes exportar, editar o eliminar productos de la categoría. Haz clic en el ícono correspondiente para realizar la acción deseada.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#search-mobile', 
+                popover: {
+                    title: 'Búsqueda de productos',
+                    description: 'Puedes buscar por nombre del producto o código.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#producto',
+                popover: {
+                    title: 'Productos',
+                    description: 'Haz clic aquí para ver los detalles de un producto registrado en la categoría.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#pagination',
+                popover: {
+                    title: 'Paginación',
+                    description: 'Esta es la paginación de los productos, puedes navegar entre las páginas para ver todos los productos de la categoría.',
+                    position: 'bottom'
+                }
+            }
+        ];
+
+        // Inicializar el tour con los pasos correspondientes
+        const tour = driver({
+            showProgress: true,
+            showButtons: ['next', 'previous', 'close'],
+            steps: isMobile ? stepsMobile : stepsDesktop
+        });
+    
+        const startBtn = document.getElementById("start-tour");
+        if (startBtn) {
+            startBtn.addEventListener("click", function () {
+                tour.drive();
+            });
+        }
+    });
+
+    // Actualizar el tour cuando cambie el tamaño de la ventana
+    window.addEventListener('resize', function() {
+        const isMobile = window.innerWidth <= 576;
+        if (driver.instance) {
+            driver.instance.reset();
+            driver.instance.defineSteps(isMobile ? stepsMobile : stepsDesktop);
+        }
+    });
+</script>
+
+{% endblock %}

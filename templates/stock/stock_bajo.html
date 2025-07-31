@@ -1,0 +1,118 @@
+{% extends "layout/base.html" %}
+
+{% load static %}
+
+{% block 'title'%} Productos con stock bajo {% endblock %}
+
+{% block 'activo-stock' %}activo{% endblock %}
+{% block 'activador-stock' %}activo{% endblock %}
+
+
+{% block 'content' %}
+<div class="container">
+    <div id="pagina" class="container mt-4 mt-sm-5 activo pt-3 pb-3 sombra">
+        <h2 class="text-center suptitle">Productos con stock bajo de todas las categorías</h2>
+    </div>
+</div>
+
+<div id="botones" class="container d-flex justify-content-between mt-2">
+    <a class="morado" href="{% url "categorias_productos" %}" role="button">  
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+        </svg>
+    </a>
+    
+    <span>
+        <a href="{% url 'exportar_productos_stock_bajo_excel' %}" class="btn btn-sm boton m-1">
+            Exportar Datos <img src="{% static 'images/excel.png' %}">
+        </a>
+    </span>
+</div>
+
+{% if productos %}
+<!-- Vista móvil: lista vertical -->
+<div class="d-block mt-3 d-sm-none px-5">
+    {% for producto in productos %}
+    <div class="card borde mb-3 sombra">
+        <div class="card-body p-3 text-center">
+            <h5 class="card-title mb-2 color-texto">{{ producto.nombre }}</h5>
+            <p class="mb-1"><strong>Categoría:</strong> {{ producto.categoría }}</p>
+            <p class="mb-1"><strong>Proveedor:</strong> 
+                {% if producto.proveedor == None %}
+                    <span class="text-danger">Eliminado</span>
+                {% else %}
+                    {{ producto.proveedor }}
+                {% endif %}
+            </p>
+            <p class="mb-1"><strong>Código:</strong> {{ producto.código }}</p>
+            <p class="mb-0"><strong>Stock:</strong> <span class="bg-danger text-light px-2 rounded">{{ producto.stock }}</span></p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Tabla de productos -->
+<div class="table-responsive container mt-4 d-none d-sm-block">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Proveedor</th>
+                <th>Código</th>
+                <th>Stock</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos %}
+                <tr>
+                    <td>{{ producto.nombre }}</td>
+                    <td>{{ producto.categoría }}</td>
+                    <td>{% if producto.proveedor == None %}
+                           <span class="text-danger">Eliminado</span>
+                        {% else %}
+                           {{ producto.proveedor }}
+                        {% endif %}
+                    </td>
+                    <td>{{ producto.código }}</td>
+                    <td class="bg-danger text-light">{{ producto.stock }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Controles de paginación -->
+<div class="pagination mt-2 justify-content-center">
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if productos.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ productos.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% for num in productos.paginator.page_range %}
+            <li class="page-item {% if productos.number == num %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">{{ num }}</a>
+            </li>
+            {% endfor %}
+            
+            {% if productos.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ productos.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+{% else %}
+    <h3 class="text-center">No hay productos con stock bajo.</h3>
+{% endif %}
+
+{% endblock %}

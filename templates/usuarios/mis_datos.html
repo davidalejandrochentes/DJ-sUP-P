@@ -1,0 +1,29 @@
+{% extends "layout/base.html" %}
+
+{% block 'title'%} Inicio {% endblock %}
+
+{% block 'activo-mis-datos-1' %}activo{% endblock %}
+{% block 'activador-mis-datos-1' %}activo{% endblock %}
+{% block 'activo-mis-datos-2' %}activo{% endblock %}
+{% block 'activador-mis-datos-2' %}activo{% endblock %}
+
+{% block 'content' %}
+<div class="container mt-4">
+    <h1 class="text-center">Mis datos</h1>
+    <div class="d-flex justify-content-center align-items-center">
+        <div class=" p-4 rounded-3 sombra bg-body-tertiary borde">
+            <p class="m-1"><b>Nombre de usuario:</b> {{ user.username }}</p>
+            <p class="m-1"><b>Nombre:</b> {{ user.first_name }}</p>
+            <p class="m-1"><b>Apellido:</b> {{ user.last_name }}</p>
+            <p class="m-1"><b>Teléfono:</b> {{ user.telefono }}</p>
+            <p class="m-1"><b>Correo electrónico:</b> {{ user.email }}</p>
+            <p class="m-1"><b>Dirección:</b> {{ user.direccion }}</p>
+            <p class="m-1"><b>Denominación:</b> {{ user.denominación }}</p>
+            <p class="m-1"><b>¿Cómo nos conoció?:</b> {{ user.cómo_nos_conoció }}</p>
+            <p class="m-1"><b>Fecha de último pago:</b> {{ user.último_pago }}</p>
+            <a href="{% url 'editar_datos' %}" class="btn boton w-100 mt-4">Editar Mis Datos</a>
+            <a href="{% url 'cambiar_password' %}" class="btn boton w-100 mt-3">Cambiar Contraseña</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

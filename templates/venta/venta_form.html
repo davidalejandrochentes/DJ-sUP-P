@@ -1,0 +1,104 @@
+{% extends "layout/base.html" %}
+
+{% load static %}
+
+{% block 'title'%} {{ titulo }} {% endblock %}
+
+{% block 'activo-venta' %}activo{% endblock %}
+{% block 'activador-venta' %}activo{% endblock %}
+
+{% block 'content' %}
+<div class="container mt-4">
+
+    <div class="container d-flex">
+        <a class="morado" href="{% url 'venta' %}" role="button">  
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+            </svg>
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card sombra borde">
+                <div class="card-header">
+                    <h4 class="card-title text-center mb-0">{{ titulo }}</h4>
+                </div>
+                <div class="card-body">
+                    <form class="" action="" method="POST">
+                        {% csrf_token %}
+                        {% if messages %}
+                            <ul class="messages">
+                                {% for message in messages %}
+                                    <div {% if message.tags %} class="alert alert-primary alerta text-center" role="alert"{% endif %}>{{ message }}</div>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label class="form-label">Tipo de Cliente</label>
+                            <div class="d-flex gap-3 align-items-center justify-content-center">
+                                {% for radio in form.tipo_cliente %}
+                                    <div class="form-check d-flex align-items-center">
+                                        {{ radio.tag }}
+                                        <label class="form-check-label" for="{{ radio.id_for_label }}">
+                                            {{ radio.choice_label }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div id="cliente-container" class="mb-3" style="display: none;">
+                            <label for="{{ form.cliente.id_for_label }}" class="form-label">Cliente</label>
+                            {{ form.cliente }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.código.id_for_label }}" class="form-label d-block">Código de Venta</label>
+                            <div class="d-flex justify-content-center">
+                                {{ form.código }}
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <input class="btn boton mt-3" type="submit" value="Crear Venta">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#id_cliente').select2({
+            theme: "bootstrap-5",
+            placeholder: "Buscar cliente...",
+            width: '100%',
+            selectionCssClass: "form-select",
+            dropdownCssClass: "form-select"
+        });
+
+        // Función para mostrar/ocultar el selector de cliente
+        function toggleClienteSelector() {
+            if ($('input[name="tipo_cliente"]:checked').val() === 'registrado') {
+                $('#cliente-container').show();
+                $('#id_cliente').prop('required', true);
+            } else {
+                $('#cliente-container').hide();
+                $('#id_cliente').prop('required', false);
+                $('#id_cliente').val('').trigger('change');
+            }
+        }
+
+        // Ejecutar al cargar la página
+        toggleClienteSelector();
+
+        // Ejecutar cuando cambie la selección
+        $('input[name="tipo_cliente"]').change(toggleClienteSelector);
+    });
+</script>
+
+{% endblock %}

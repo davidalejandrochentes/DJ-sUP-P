@@ -1,0 +1,43 @@
+{% extends "layout/base.html" %}
+
+{% block 'title'%} Nuevo Proveedor {% endblock %}
+
+{% block 'activo-proveedores' %}activo{% endblock %}
+{% block 'activador-proveedores' %}activo{% endblock %}
+
+{% block 'styles' %}
+{% load static %}
+<link rel="stylesheet" href="{% static "css/forms.css" %}">
+{% endblock %}
+
+{% block 'content' %}
+<div class="container my-5">
+
+    <div class="container d-flex">
+        <a class="morado" href="{% url "proveedores" %}" role="button">  
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+            </svg>
+        </a>
+    </div>
+
+    <h1 class="text-center">Nuevo Proveedor</h1>
+    <div class="d-flex justify-content-center align-items-center">
+    <form  class=" p-5 rounded-3 sombra borde bg-body-tertiary" actions="" method="POST">
+      {% csrf_token %}
+      {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <div {% if message.tags %} class="alert alert-primary alerta text-center" role="alert"{% endif %}>{{ message }}</div>
+            {% endfor %}
+        </ul>
+      {% endif %}
+        <table>
+            {{ form }}
+        </table>    
+        <input class="btn boton mt-3" type="submit" value="Enviar">
+    </form>
+    </div>
+
+</div>
+{% endblock %}

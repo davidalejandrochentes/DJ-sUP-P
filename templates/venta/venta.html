@@ -1,0 +1,323 @@
+{% extends "layout/base.html" %}
+
+{% load static %}
+
+{% block 'title'%} Venta {% endblock %}
+
+{% block 'activo-venta' %}activo{% endblock %}
+{% block 'activador-venta' %}activo{% endblock %}
+
+
+{% block 'content' %}
+
+<div class="d-flex justify-content-center" >
+    <form class="d-none d-xl-block mt-5" role="search" action="" method='GET' id="search-input">
+        <div class="input-group d-flex">
+            <div class="d-flex align-items-center me-2">
+                <span class="small text-muted me-1">Fecha:</span>
+                <input class="form-control bg-light borde small text-muted" id="search-date-specific" name="search_date_specific" type="date" aria-label="Fecha específica">
+            </div>
+            <div class="small text-muted mx-2 my-auto">o</div>
+            <div class="d-flex align-items-center me-2">
+                <span class="small text-muted me-1">Desde:</span>
+                <input class="form-control bg-light borde small text-muted" id="search-date-start" name="search_date_start" type="date" aria-label="Fecha inicial">
+            </div>
+            <div class="d-flex align-items-center me-2">
+                <span class="small text-muted me-1">Hasta:</span>
+                <input class="form-control bg-light borde small text-muted" id="search-date-end" name="search_date_end" type="date" aria-label="Fecha final">
+            </div>
+            <div class="small text-muted mx-2 my-auto">o</div>
+            <div class="d-flex align-items-center me-2">
+                <input class="form-control bg-light borde small rounded-0 rounded-start" id="search-code" name="search_code" type="search" placeholder="Código de venta o Cliente" aria-label="Código">
+            </div>
+            <button class="btn ojo text-light rounded-0 rounded-end borde" type="submit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                </svg>
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="container">
+    <div id="nombre-pagina" class="container mt-4 mt-sm-3 activo pt-3 pb-3 sombra">
+        <div class="d-flex flex-column align-items-center">
+            <h2 class="text-center suptitle">Ventas</h2>
+            <p class="text-center text-white mt-0 mb-2" id="cantidad-ventas">Cantidad de ventas: {{ total }}</p>
+            <button id="start-tour" class="btn btn-outline-light rounded-pill mb-2">Iniciar Recorrido <img src="{% static "images/video-camera.png" %}"></button>
+        </div>
+    </div>
+</div>
+
+<div id="botones" class="container d-flex justify-content-center mt-2">
+    <a href="{% url 'nueva_venta' %}" class="btn btn-sm boton me-2" id="btn-nueva-venta">
+        Nueva 
+        <img src="{% static "images/check.png" %}">
+    </a>
+    <a href="{% url 'descargar_ventas_excel' %}?{{ request.GET.urlencode }}" class="btn btn-sm boton" id="exportar-ventas">
+        Exportar ventas <img src="{% static 'images/excel.png' %}">
+    </a>
+</div>
+
+<div id="search" class="container">
+    <form class="form-inline mw-100 navbar-search mx-auto d-block d-xl-none mt-3" role="search" action="" method='GET'>
+        <div class="input-group d-flex flex-column" id="search-mobile">
+            <div class="mb-2">
+                <span class="small text-muted">Fecha:</span>
+                <input class="form-control bg-light borde small text-muted" id="search-date-specific-mobile" name="search_date_specific" type="date" aria-label="Fecha específica">
+            </div>
+            <div class="small text-muted text-center fw-bold">o</div>
+            <div class="mb-2">
+                <span class="small text-muted">Desde:</span>
+                <input class="form-control bg-light borde small text-muted" id="search-date-start-mobile" name="search_date_start" type="date" aria-label="Fecha inicial">
+            </div>
+            <div class="mb-2">
+                <span class="small text-muted">Hasta:</span>
+                <input class="form-control bg-light borde small text-muted" id="search-date-end-mobile" name="search_date_end" type="date" aria-label="Fecha final">
+            </div>
+            <div class="small text-muted text-center mb-2 fw-bold">o</div>
+            <div class="mb-2">
+                <input class="form-control bg-light borde small rounded-start" id="search-code-mobile" name="search_code" type="search" placeholder="Código de venta o Cliente" aria-label="Código">
+            </div>
+                
+            <button class="btn ojo text-light rounded-1" type="submit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                </svg>
+            </button>
+            
+        </div>
+    </form>
+</div>
+
+<div class="container mt-4">
+    <div class="d-block mt-3 d-sm-none px-5">
+        {% for venta in ventas %}
+        <div class="carta borde mb-3 sombra" id="venta">
+            <a class="text-decoration-none" href="{% url 'detalle_venta' venta.id %}">
+                <div class="card-body p-3 text-center">
+                    <p class="mb-2 fs-3"><strong>#{{ venta.código }}</strong></p>
+                    <p class="mb-1"><strong>Fecha y hora:</strong> {{ venta.fecha|date:"d/m/Y H:i" }}</p>
+                    <p class="mb-1"><strong>Cliente:</strong> 
+                        {% if venta.cliente %}
+                            {{ venta.cliente.nombre }}
+                        {% else %}
+                            <span>Desconocido</span>
+                        {% endif %}
+                    </p>
+                    <p class="mb-2"><strong>Total:</strong> ${{ venta.total }}</p>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="table-responsive d-none d-sm-block">
+        <table class="table table-hover" id="ventas-tabla">
+            <thead>
+                <tr>
+                    <th scope="col">Código</th>
+                    <th scope="col">Fecha y hora</th>
+                    <th scope="col">Cliente</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Detalles</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for venta in ventas %}
+                <tr>
+                    <td><strong>#{{ venta.código }}</strong></td>
+                    <td>{{ venta.fecha|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        {% if venta.cliente %}
+                            {{ venta.cliente.nombre }}
+                        {% else %}
+                            <span class="text-muted">Desconocido</span>
+                        {% endif %}
+                    </td>
+                    <td>${{ venta.total }}</td>
+                    <td id="acceder-venta-tabla">
+                        <a href="{% url 'detalle_venta' venta.id %}" class="btn btn-sm boton">
+                            Acceder
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="pagination mt-2 justify-content-center">
+    <nav aria-label="Page navigation" id="pagination">
+        <ul class="pagination justify-content-center">
+            {% if ventas.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ ventas.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% for num in ventas.paginator.page_range %}
+            <li class="page-item {% if ventas.number == num %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">{{ num }}</a>
+            </li>
+            {% endfor %}
+            
+            {% if ventas.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ ventas.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const driver = window.driver.js.driver;
+        
+        // Detectar si es móvil
+        const isMobile = window.innerWidth <= 1200;
+
+        // Pasos para escritorio
+        const stepsDesktop = [
+            {
+                element: '#search-input',
+                popover: {
+                    title: 'Buscar ventas',
+                    description: 'Puedes buscar por nombre del cliente, código de venta, por una fecha en concreto o por un rango de fechas.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#cantidad-ventas',
+                popover: {
+                    title: 'Cantidad total de ventas',
+                    description: 'Esta es la cantidad total de las ventas registradas por usted.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#btn-nueva-venta',
+                popover: {
+                    title: 'Nueva venta',
+                    description: 'Haz clic aquí para acceder al formulario de registro de una nueva venta. Recomendación importante para optimizar su tiempo: - Si tiene más de una venta al día con clientes desconocidos, ingrese una única venta diaria con todos los productos vendidos. - Esto le permitirá completar el registro en menos de 15 minutos diarios. - Esta práctica es especialmente recomendada debido a las limitaciones de velocidad de internet, lo que podría causar problemas al ingresar múltiples ventas durante el día.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#exportar-ventas',
+                popover: {
+                    title: 'Exportar ventas',
+                    description: 'Exportará un fichero Excel con las ventas filtradas en la tabla. Si no hay filtros aplicados, se exportarán todas las ventas. Los filtros aplicados incluyen fecha, cliente, etc.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#ventas-tabla',
+                popover: {
+                    title: 'Listado de ventas',
+                    description: 'Mostrará las ventas filtradas según los criterios seleccionados. Si no hay filtros aplicados, se mostrarán todas las ventas.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#acceder-venta-tabla',
+                popover: {
+                    title: 'Ver detalles de venta',
+                    description: 'Haz clic en cualquier venta para ver sus detalles completos, incluyendo productos y total.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#pagination',
+                popover: {
+                    title: 'Paginación',
+                    description: 'Esta es la paginación de las ventas, puedes navegar entre las páginas para ver todas las ventas.',
+                    position: 'bottom'
+                }
+            }
+        ];
+
+        // Pasos para móvil
+        const stepsMobile = [
+            {
+                element: '#cantidad-ventas',
+                popover: {
+                    title: 'Cantidad total de ventas',
+                    description: 'Esta es la cantidad total de las ventas registradas por usted.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#btn-nueva-venta',
+                popover: {
+                    title: 'Nueva venta',
+                    description: 'Haz clic aquí para acceder al formulario de registro de una nueva venta. Recomendación importante para optimizar su tiempo: - Si tiene más de una venta al día con clientes desconocidos, ingrese una única venta diaria con todos los productos vendidos. - Esto le permitirá completar el registro en menos de 15 minutos diarios. - Esta práctica es especialmente recomendada debido a las limitaciones de velocidad de internet, lo que podría causar problemas al ingresar múltiples ventas durante el día.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#exportar-ventas',
+                popover: {
+                    title: 'Exportar ventas',
+                    description: 'Exportará un fichero Excel con las ventas filtradas en la tabla. Si no hay filtros aplicados, se exportarán todas las ventas. Los filtros aplicados incluyen fecha, cliente, etc.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#search-mobile', 
+                popover: {
+                    title: 'Búsqueda de ventas',
+                    description: 'Puedes buscar por nombre del cliente, código de venta, por una fecha en concreto o por un rango de fechas.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#venta',
+                popover: {
+                    title: 'Listado de ventas',
+                    description: 'Mostrará las ventas filtradas según los criterios seleccionados. Si no hay filtros aplicados, se mostrarán todas las ventas',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#pagination',
+                popover: {
+                    title: 'Paginación',
+                    description: 'Esta es la paginación de las ventas, puedes navegar entre las páginas para ver todas las ventas.',
+                    position: 'bottom'
+                }
+            }
+        ];
+
+        // Inicializar el tour con los pasos correspondientes
+        const tour = driver({
+            showProgress: true,
+            showButtons: ['next', 'previous', 'close'],
+            steps: isMobile ? stepsMobile : stepsDesktop
+        });
+    
+        const startBtn = document.getElementById("start-tour");
+        if (startBtn) {
+            startBtn.addEventListener("click", function () {
+                tour.drive();
+            });
+        }
+    });
+
+    // Actualizar el tour cuando cambie el tamaño de la ventana
+    window.addEventListener('resize', function() {
+        const isMobile = window.innerWidth <= 1200;
+        if (driver.instance) {
+            driver.instance.reset();
+            driver.instance.defineSteps(isMobile ? stepsMobile : stepsDesktop);
+        }
+    });
+</script>
+
+{% endblock %}

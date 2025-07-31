@@ -1,0 +1,519 @@
+{% extends "layout/base.html" %}
+
+{% load static %}
+
+{% block 'title'%} {{ titulo }} {% endblock %}
+
+{% block 'activo-venta' %}activo{% endblock %}
+{% block 'activador-venta' %}activo{% endblock %}
+
+{% block 'content' %}
+<div class="container mt-4">
+    <!-- Información de la venta -->
+
+    <div class="container d-flex">
+        <a class="morado" href="{% url 'venta' %}" role="button">  
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+            </svg>
+        </a>
+    </div>
+
+    <div class="container">
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <div {% if message.tags %} class="alert alert-primary alerta text-center" role="alert"{% endif %}>{{ message }}</div>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+    <div class="d-flex">
+        <button id="start-tour" class="btn mx-auto boton mb-3">Iniciar Recorrido <img src="{% static "images/video-camera.png" %}"></button>
+    </div>
+
+    <div class="row mb-4 mt-2">
+        <div class="col-md-8 mx-auto">
+            <div class="card sombra borde" id="info-venta">
+                <div class="card-header d-none d-sm-flex justify-content-between align-items-center">
+                    <h4 class="mb-0" id="nro-venta">{{ titulo }}</h4>
+                    <div>
+                        <a href="{% url 'descargar_venta_excel' venta.id %}" class="btn btn-sm boton rounded-pill m-1" id="exportar-venta">
+                            Exportar venta <img src="{% static 'images/excel.png' %}">
+                        </a>
+                        <button type="button" class="btn btn-sm boton rounded-pill m-1" data-bs-toggle="modal" data-bs-target="#editarVentaModal" id="editar-venta">
+                            Editar
+                            <img src="{% static 'images/check.png' %}">
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger rounded-pill m-1" data-bs-toggle="modal" data-bs-target="#eliminarVentaModal" id="eliminar-venta">
+                            Eliminar
+                            <img src="{% static 'images/trash.png' %}">
+                        </button>
+                    </div>
+                </div>
+                <div class="card-header d-flex d-sm-none justify-content-between align-items-center">
+                    <h4 class="mb-0" id="nro-venta-movile">{{ titulo }}</h4>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm boton rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="operaciones">
+                            Operaciones
+                            <img src="{% static 'images/double-tap.png' %}">
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="{% url 'descargar_venta_excel' venta.id %}" class="btn btn-sm boton rounded-pill ms-1">
+                                    Exportar venta <img src="{% static 'images/excel.png' %}">
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <button type="button" class="btn btn-sm boton ms-1" data-bs-toggle="modal" data-bs-target="#editarVentaModal">
+                                    Editar
+                                    <img src="{% static 'images/check.png' %}">
+                                </button>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <button type="button" class="btn btn-sm btn-danger rounded-pill ms-1" data-bs-toggle="modal" data-bs-target="#eliminarVentaModal">
+                                    Eliminar
+                                    <img src="{% static 'images/trash.png' %}">
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="m-1"><b>Código:</b> {{ venta.código }}</p>
+                            <p class="m-1"><b>Cliente:</b> 
+                                {% if venta.cliente %}
+                                    {{ venta.cliente }}
+                                {% else %}
+                                    <span class="text-muted">Cliente Desconocido</span>
+                                {% endif %}
+                            </p>
+                            <p class="m-1"><b>Fecha y Hora:</b> {{ venta.fecha|date:"d/m/Y H:i" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="m-1"><b>Total:</b> ${{ venta.total }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de productos -->
+    <div class="row mb-4">
+        <div class="col-md-8 mx-auto">
+            <div class="card sombra borde" id="productos-venta">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Productos</h5>
+                    <button type="button" class="btn btn-sm boton" data-bs-toggle="modal" data-bs-target="#agregarProductoModal" id="agregar-productos">
+                        Agregar Producto
+                        <img src="{% static 'images/check.png' %}">
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio</th>
+                                    <th>Subtotal</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for detalle in detalles %}
+                                <tr>
+                                    <td>
+                                        {% if detalle.producto %}
+                                            {{ detalle.producto.nombre }}
+                                        {% else %}
+                                            {{ detalle.nombre_producto }} <small class="text-muted">(Producto eliminado)</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ detalle.cantidad }}</td>
+                                    <td>${{ detalle.precio_unitario }}</td>
+                                    <td>${{ detalle.subtotal }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-danger" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#eliminarDetalleModal{{ detalle.id }}"
+                                                id="eliminar-producto">
+                                            <img src="{% static 'images/trash.png' %}">
+                                        </button>
+                                    </td>
+                                </tr>
+                                <!-- Modal Eliminar Detalle para cada detalle -->
+                                <div class="modal fade" id="eliminarDetalleModal{{ detalle.id }}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Eliminar Producto</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>¿Estás seguro de que deseas eliminar el producto "{{ detalle.producto.nombre }}"?</p>
+                                                <p class="text-danger">Esta acción no se puede deshacer.</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a href="{% url 'eliminar_detalle' detalle.id %}" class="btn btn-danger rounded-pill">Eliminar</a>
+                                                <button type="button" class="btn boton rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center">No hay productos agregados</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Editar Venta -->
+<div class="modal fade" id="editarVentaModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Venta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Tipo de Cliente:</label>
+                        <div class="d-flex gap-3">
+                            {% for radio in form_venta.tipo_cliente %}
+                            <div class="form-check">
+                                {{ radio.tag }}
+                                <label class="form-check-label" for="{{ radio.id_for_label }}">
+                                    {{ radio.choice_label }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="mb-3" id="cliente-container">
+                        <label class="form-label">Cliente:</label>
+                        {{ form_venta.cliente }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Código:</label>
+                        {{ form_venta.código }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Fecha:</label>
+                        <input type="date" name="fecha" class="form-control form-control-sm bg-light small text-muted" value="{{ venta.fecha|date:'Y-m-d' }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Hora:</label>
+                        <input type="time" name="hora" class="form-control form-control-sm bg-light small text-muted" value="{{ venta.fecha|time:'H:i' }}" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" name="editar_venta" class="btn boton rounded-pill">Guardar Cambios</button>
+                    <button type="button" class="btn boton rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Agregar Producto -->
+<div class="modal fade" id="agregarProductoModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar Producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Producto:</label>
+                        {{ form_detalle.producto }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Cantidad:</label>
+                        {{ form_detalle.cantidad }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn boton rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" name="agregar_detalle" class="btn boton">Agregar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Eliminar Venta -->
+<div class="modal fade" id="eliminarVentaModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Eliminar Venta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar esta venta?</p>
+                <p class="text-danger">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <a href="{% url 'eliminar_venta' venta.id %}" class="btn btn-danger rounded-pill">Eliminar</a>
+                <button type="button" class="btn boton rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#id_producto').select2({
+            dropdownParent: $('#agregarProductoModal'),
+            theme: "bootstrap-5",
+            placeholder: "Buscar por nombre o código...",
+            width: '100%',
+            selectionCssClass: "form-select",
+            dropdownCssClass: "form-select",
+            matcher: function(params, data) {
+                // Si no hay término de búsqueda, mostrar la opción
+                if ($.trim(params.term) === '') {
+                    return data;
+                }
+
+                // Obtener el texto y convertirlo a minúsculas para la búsqueda
+                var term = params.term.toLowerCase();
+                var text = data.text.toLowerCase();
+                
+                // Extraer el código del texto (asumiendo que está entre paréntesis)
+                var code = '';
+                var codeMatch = text.match(/\(([^)]+)\)/);
+                if (codeMatch) {
+                    code = codeMatch[1].toLowerCase();
+                }
+
+                // Buscar tanto en el nombre como en el código
+                if (text.indexOf(term) > -1 || code.indexOf(term) > -1) {
+                    return data;
+                }
+
+                // Si no hay coincidencia, retornar null
+                return null;
+            }
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        // Inicializar select2 para el selector de cliente
+        $('#id_cliente').select2({
+            theme: "bootstrap-5",
+            placeholder: "Seleccionar cliente...",
+            width: '100%',
+            dropdownParent: $('#editarVentaModal'),
+            selectionCssClass: "form-select",
+            dropdownCssClass: "form-select"
+        });
+
+        // Función para mostrar/ocultar el selector de cliente
+        function toggleClienteSelector() {
+            if ($('input[name="tipo_cliente"]:checked').val() === 'registrado') {
+                $('#cliente-container').show();
+            } else {
+                $('#cliente-container').hide();
+                $('#id_cliente').val('').trigger('change');
+            }
+        }
+
+        // Ejecutar al cargar la página y cuando se abre el modal
+        $('#editarVentaModal').on('shown.bs.modal', function () {
+            toggleClienteSelector();
+        });
+
+        // Ejecutar cuando cambie la selección
+        $('input[name="tipo_cliente"]').change(toggleClienteSelector);
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#id_cliente').select2({
+            dropdownParent: $('#editarVentaModal'),
+            theme: "bootstrap-5",
+            placeholder: "Buscar cliente...",
+            width: '100%',
+            selectionCssClass: "form-select",
+            dropdownCssClass: "form-select"
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const driver = window.driver.js.driver;
+        
+        // Detectar si es móvil
+        const isMobile = window.innerWidth <= 576;
+
+        // Pasos para escritorio
+        const stepsDesktop = [
+            {
+                element: '#info-venta',
+                popover: {
+                    title: 'Información de la venta',
+                    description: 'Aquí puedes ver los detalles generales de la venta, incluyendo fecha, cliente y total.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#nro-venta',
+                popover: {
+                    title: 'Número de venta',
+                    description: 'Este es el identificador único de la venta. Puedes usarlo para referenciar esta venta en otros documentos.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#exportar-venta',
+                popover: {
+                    title: 'Exportar venta',
+                    description: 'Exportará un fichero Excel con toda la información detallada de esta venta, incluyendo productos y totales.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#editar-venta',
+                popover: {
+                    title: 'Editar venta',
+                    description: 'Haz clic aquí para modificar la información de esta venta, incluyendo cliente y productos.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#eliminar-venta',
+                popover: {
+                    title: 'Eliminar venta',
+                    description: 'Haz clic aquí para eliminar esta venta permanentemente. Esta acción no se puede deshacer.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#productos-venta',
+                popover: {
+                    title: 'Listado de productos',
+                    description: 'Aquí puedes ver todos los productos incluidos en esta venta con sus cantidades y precios.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#agregar-productos',
+                popover: {
+                    title: 'Agregar productos',
+                    description: 'Haz clic aquí para agregar nuevos productos a esta venta.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#eliminar-producto',
+                popover: {
+                    title: 'Eliminar producto',
+                    description: 'Haz clic aquí para eliminar un producto de la venta. Esta acción no se puede deshacer.',
+                    position: 'bottom'
+                }
+            },
+        ];
+
+        // Pasos para móvil
+        const stepsMobile = [
+            {
+                element: '#info-venta',
+                popover: {
+                    title: 'Información de la venta',
+                    description: 'Aquí puedes ver los detalles generales de la venta, incluyendo fecha, cliente y total.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#nro-venta-movile',
+                popover: {
+                    title: 'Número de venta',
+                    description: 'Este es el identificador único de la venta. Puedes usarlo para referenciar esta venta en otros documentos.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#operaciones',
+                popover: {
+                    title: 'Operaciones',
+                    description: 'Aquí puedes exportar, editar o eliminar esta venta. Haz clic en el ícono correspondiente para realizar la acción deseada.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#productos-venta',
+                popover: {
+                    title: 'Listado de productos',
+                    description: 'Aquí puedes ver todos los productos incluidos en esta venta con sus cantidades y precios.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#agregar-productos',
+                popover: {
+                    title: 'Agregar productos',
+                    description: 'Haz clic aquí para agregar nuevos productos a esta venta.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#eliminar-producto',
+                popover: {
+                    title: 'Eliminar producto',
+                    description: 'Haz clic aquí para eliminar un producto de la venta. Esta acción no se puede deshacer.',
+                    position: 'bottom'
+                }
+            },
+        ];
+
+        // Inicializar el tour con los pasos correspondientes
+        const tour = driver({
+            showProgress: true,
+            showButtons: ['next', 'previous', 'close'],
+            steps: isMobile ? stepsMobile : stepsDesktop
+        });
+    
+        const startBtn = document.getElementById("start-tour");
+        if (startBtn) {
+            startBtn.addEventListener("click", function () {
+                tour.drive();
+            });
+        }
+    });
+
+    // Actualizar el tour cuando cambie el tamaño de la ventana
+    window.addEventListener('resize', function() {
+        const isMobile = window.innerWidth <= 576;
+        if (driver.instance) {
+            driver.instance.reset();
+            driver.instance.defineSteps(isMobile ? stepsMobile : stepsDesktop);
+        }
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,379 @@
+{% extends "layout/base.html" %}
+
+{% load static %}
+
+
+{% block 'title'%} sUP {% endblock %}
+
+{% block 'content' %}
+
+{% if user.is_authenticated %}
+
+<div class="container">
+    <div id="nombre-pagina" class="container mt-4 mt-sm-5 activo pt-3 pb-3 sombra">
+        <h2 class="text-center suptitle">Inicio</h2>
+    </div>
+</div>
+
+
+<div id="clientes" class="container mt-4">
+    <div class="row text-center justify-content-center px-5">
+        <div class="col-12 col-xl-2 sombra borde m-2 carta">
+            <a class="text-decoration-none" href="{% url "proveedores" %}">
+                <div class="testimonial-card p-4">
+                    <p class="m-0"><strong>Proveedores</strong></p>
+                </div>
+            </a>
+        </div>
+        <div class="col-12 col-xl-2 sombra borde m-2 carta">
+            <a class="text-decoration-none" href="{% url "clientes" %}">
+                <div class="testimonial-card p-4">
+                    <p class="m-0"><strong>Clientes</strong></p>
+                </div>
+            </a>
+        </div>
+        <div class="col-12 col-xl-2 sombra borde m-2 carta">
+            <a class="text-decoration-none" href="{% url "categorias_productos" %}">
+                <div class="testimonial-card p-4">
+                    <p class="m-0"><strong>Inventario</strong></p>
+                </div>
+            </a>
+        </div>
+        <div class="col-12 col-xl-2 sombra borde m-2 carta">
+            <a class="text-decoration-none" href="{% url "venta" %}">
+                <div class="testimonial-card p-4">
+                    <p class="m-0"><strong>Ventas</strong></p>
+                </div>
+            </a>
+        </div>
+        <div class="col-12 col-xl-2 sombra borde m-2 carta">
+            <a class="text-decoration-none" href="{% url "reporte" %}">
+                <div class="testimonial-card p-4">
+                    <p class="m-0"><strong>Estadísticas</strong></p>
+                </div>
+            </a>
+        </div>
+        <div class="col-12 col-xl-2 sombra borde m-2 carta">
+            <a class="text-decoration-none" href="{% url "consejos" %}">
+                <div class="testimonial-card p-4">
+                    <p class="m-0"><strong>Notificaciones</strong></p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+{% else %}
+
+<section id="inicio" class="text-center py-5" style="color: black">
+    <div class="container">
+        <div class="position-relative">
+            <img class="img-fluid animacion-bajo" src="{% static "images/data-science.png" %}" style="max-height: 250px;">
+            <span class="boton badge bg-primary position-absolute top-0 m-2 fs-4 animacion-izquierda" style="transform: rotate(45deg);">Beta</span>
+        </div>
+        <h1 class="animacion-derecha">Simplifica la gestión de tu negocio</h1>
+        <div class="container mt-2">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <div class="ratio ratio-16x9 mt-4 mb-4">
+                        <iframe src="https://www.youtube.com/embed/j_9BkCQYhQA" 
+                                title="YouTube video" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="#funcionalidades" class="btn boton btn-lg animacion-derecha">Descubre más</a>
+    </div>
+</section>
+
+<section id="funcionalidades" class="pt-5 pb-5 activo" >
+    <div class="container text-white">
+        <h2 class="text-center suptitle animacion-derecha">Funcionalidades</h2>
+        <p class="text-center text-white mb-5 animacion-izquierda">Descubre todas las herramientas que sUP pone a tu disposición para hacer crecer tu negocio.</p>
+        <div class="row">
+            <div class="col-md-6 col-lg-3 text-center animacion-arriba">
+                <div class="feature-icon"><i class="bi bi-bar-chart-fill"></i></div>
+                <img src="{% static "images/idea.png" %}">
+                <h5 class="mt-2">Notificaciones</h5>
+                <p>Recibe información clave para gestionar tu negocio de manera eficiente.</p>
+            </div>
+            <div class="col-md-6 col-lg-3 text-center animacion-arriba">
+                <div class="feature-icon"><i class="bi bi-people-fill"></i></div>
+                <img src="{% static "images/folder.png" %}">
+                <h5 class="mt-2">Registro</h5>
+                <p>Lleva un control completo de tus contactos, proveedores, stock y ventas.</p>
+            </div>
+            <div class="col-md-6 col-lg-3 text-center animacion-arriba">
+                <div class="feature-icon"><i class="bi bi-file-earmark-text"></i></div>
+                <img src="{% static "images/report.png" %}">
+                <h5 class="mt-2">Informes detallados</h5>
+                <p>Genera informes completos para analizar tu negocio en profundidad.</p>
+            </div>
+            <div class="col-md-6 col-lg-3 text-center animacion-arriba">
+                <div class="feature-icon"><i class="bi bi-file-earmark-arrow-down"></i></div>
+                <img src="{% static "images/inbox.png" %}">
+                <h5 class="mt-2">Descargas en Excel</h5>
+                <p>Exporta tus datos en formato Excel para revisiones más fáciles.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container text-center px-5">
+        <h3 class="suptitle animacion-derecha">¿Por Qué Elegir sUP?</h3>
+        <p class="animacion-izquierda">Descubre cómo sUP simplifica y potencia la gestión de tu negocio para que te enfoques en lo importante.</p>
+        
+        <div class="row text-center justify-content-center mb-4">
+            <div class="col-12 col-lg-3 m-2 sombra p-3 animacion-arriba">
+                <div class="icon-box">
+                    <img src="{% static "images/saving.png" %}">
+                    <h4 style="color: #AF40FF;">Ahorro de Tiempo</h4>
+                    <p class="text-muted">Reduce el tiempo dedicado a tareas administrativas y enfócate en hacer crecer tu negocio.</p>
+                </div>
+            </div>
+            <div class="col-12 col-lg-3 m-2 sombra p-3 animacion-arriba">
+                <div class="icon-box">
+                    <img src="{% static "images/choose.png" %}">
+                    <h4 style="color: #5B42F3;">Decisiones Informadas</h4>
+                    <p class="text-muted">Accede a gráficos y análisis detallados que te permiten tomar decisiones estratégicas con confianza.</p>
+                </div>
+            </div>
+            <div class="col-12 col-lg-3 m-2 sombra p-3 animacion-arriba">
+                <div class="icon-box">
+                    <img src="{% static "images/investment.png" %}">
+                    <h4 style="color: #00DDEB;">Mayor Rentabilidad</h4>
+                    <p class="text-muted">Identifica los productos más rentables y optimiza tus ventas para maximizar ingresos.</p>
+                </div>
+            </div>
+        </div>
+
+        <a href="{% url "registro" %}" class="btn btn-lg boton animacion-arriba" style="background-color: #00DDEB;">
+            Empieza Ahora con sUP
+        </a>
+    </div>
+</section>
+
+<section class="py-5 activo">
+    <div class="container px-4">
+        <img src="{% static "images/pet-care.png" %}" class="img-fluid mx-auto d-block animacion-bajo">
+        <h2 class="text-center suptitle mb-2 animacion-derecha">Compromiso con el Cuidado Animal</h2>
+        <p class="text-center animacion-izquierda">En sUP, creemos en hacer una diferencia. Por eso, nos enorgullece anunciar que el 15% de nuestros ingresos será destinado a causas relacionadas con el cuidado y la protección animal. Al elegir nuestros servicios, no solo estás disfrutando de una experiencia única, sino que también estás contribuyendo a un mundo mejor para nuestros amigos de cuatro patas. ¡Únete a nosotros en esta misión y hagamos juntos un impacto positivo!</p>
+        <img src="{% static "images/pets.png" %}" class="img-fluid mx-auto d-block animacion-arriba">
+    </div>
+</section>
+
+<section class="text-center py-5">
+    <div class="container">
+        <h3 class="suptitle animacion-derecha">Plan Todo Incluido</h3>
+        <p class="mb-3 animacion-izquierda">Todo lo que necesitas para llevar la gestión de tu negocio al siguiente nivel</p>
+
+        <div class="row justify-content-center animacion-arriba">
+            <div class="col-md-6">
+                <div class="card p-4 sombra border-0">
+                    <div class="card-header activo text-white py-3">
+                        <h2 class="suptitle">300 CUP / mes</h2>
+                        <p>Plan Completo sin Restricciones</p>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-4">
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+                                </svg>
+                                Gráficos avanzados de ventas
+                            </li>
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+                                </svg>
+                                Notificaciones especializadas
+                            </li>
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+                                </svg>
+                                Registro y gestión de clientes y proveedores
+                            </li>
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+                                </svg>
+                                Informes detallados para decisiones inteligentes
+                            </li>
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+                                </svg>
+                                Descarga de datos en Excel
+                            </li>
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+                                </svg>
+                                Soporte prioritario
+                            </li>
+                        </ul>
+                        <p class="text-muted">Sin costos ocultos. Sin sorpresas.</p>
+                        <a href="{% url "registro" %}" class="btn btn-lg boton">
+                            Únete ahora por 300 CUP/mes
+                            <img src="{% static "images/price-tag.png" %}">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section> 
+
+<section class="testimonials py-5">
+    <div class="container">
+        <h3 class="text-center suptitle animacion-derecha">Testimonios</h3>
+        <p class="text-center mb-4 animacion-izquierda">Lo que dicen nuestros usuarios sobre su experiencia con sUP</p>
+        <div class="row text-center justify-content-center px-5">
+            <div class="col-12 col-lg-3 sombra m-2 p-3 animacion-arriba">
+                <div class="testimonial-card p-4">
+                    <img src="{% static "images/sufferer.png" %}">
+                    <p>"sUP ha revolucionado nuestra forma de gestionar ventas. ¡Increíble herramienta!"</p>
+                    <p style="color: #AF40FF;"><strong>- María L., Dueña de tienda</strong></p>
+                </div>
+            </div>
+            <div class="col-12 col-lg-3 sombra m-2 p-3 animacion-arriba">
+                <div class="testimonial-card p-4">
+                    <img src="{% static "images/sufferer.png" %}">
+                    <p>"Nunca había sido tan fácil analizar las ganancias y los productos más vendidos."</p>
+                    <p style="color: #5B42F3;"><strong>- Pedro S., Gerente de ventas</strong></p>
+                </div>
+            </div>
+            <div class="col-12 col-lg-3 sombra m-2 p-3 animacion-arriba">
+                <div class="testimonial-card p-4">
+                    <img src="{% static "images/sufferer.png" %}">
+                    <p>"La exportación en Excel me permite ver mis datos en cualquier momento."</p>
+                    <p style="color: #00DDEB;"><strong>- Luisa R., Empresaria</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="preguntas_frecuentes" class="py-5">
+    <div class="container px-4">
+        <h3 class="text-center suptitle animacion-derecha">Preguntas Frecuentes</h3>
+        <p class="text-center mb-4 animacion-izquierda">Encuentra respuestas a las dudas más comunes sobre sUP</p>
+        <div class="accordion accordion-flush animacion-arriba" id="accordionFlushExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" style="color: #AF40FF;" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                        <strong>¿En algún momento se podrán incluir fotos para sustituir los íconos?</strong>
+                    </button>
+                </h2>
+                <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">La app se encuentra bajo rigurosas pruebas de funcionalidad. A medida que vaya escalando, se implementará la posibilidad de agregar imágenes personalizadas por los usuarios.</div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" style="color: #5B42F3;" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                        <strong>¿Se incorporarán más funcionalidades a la app?</strong>
+                    </button>
+                </h2>
+                <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">Por supuesto, a medida que se lancen nuevas actualizaciones, se trabajará en la incorporación de nuevas funcionalidades.</div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" style="color: #00DDEB;" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                        <strong>¿A quién se le entrega el porcentaje destinado al cuidado animal?</strong>
+                    </button>
+                </h2>
+                <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">La recaudación se pondrá a disposición de la ONG Aniplant Pinar del Río, cuya coordinadora es la Sra. Durkyen Yorlenys Licort Valdéz (+53 53364168). (<a href="https://www.facebook.com/share/p/15eSMhTLD5/" class="text-decoration-none" target="_blank">Link-1</a>) (<a href="https://www.facebook.com/share/r/1Ci12UWSWo/" class="text-decoration-none" target="_blank">Link-2</a>)</div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" style="color: #AF40FF;" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collaps4" aria-expanded="false" aria-controls="flush-collaps4">
+                        <strong>¿Cómo se realizan los pagos?</strong>
+                    </button>
+                </h2>
+                <div id="flush-collaps4" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">Los pagos se realizarán a través de la plataforma Transfermóvil, una vez al mes. Es de extrema importancia incluir su número telefónico en la operación para identificar su cuenta correctamente.</div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" style="color: #5B42F3;" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collaps5" aria-expanded="false" aria-controls="flush-collaps5">
+                        <strong>¿Qué pasa si no pago?</strong>
+                    </button>
+                </h2>
+                <div id="flush-collaps5" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">Una vez dentro de la aplicación, cinco días antes de la fecha límite de pago, le aparecerá una notificación para realizar el pago. Si no efectúa el pago antes de la fecha límite, su cuenta será bloqueada. Transcurridos 30 días desde el bloqueo, su cuenta será eliminada permanentemente.</div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" style="color: #00DDEB;" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collaps6" aria-expanded="false" aria-controls="flush-collaps6">
+                        <strong>¿Tengo límites para almacenar datos de mi negocio?</strong>
+                    </button>
+                </h2>
+                <div id="flush-collaps6" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">No, usted puede registrar todos los datos de su negocio de forma ilimitada.</div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" style="color: #AF40FF;" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collaps7" aria-expanded="false" aria-controls="flush-collaps7">
+                        <strong>¿La cuota mensual puede variar?</strong>
+                    </button>
+                </h2>
+                <div id="flush-collaps7" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">Sí, pero en caso de haber cambios en la tarifa mensual, se le notificará con un mínimo de tres meses de antelación.</div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" style="color: #5B42F3;" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collaps8" aria-expanded="false" aria-controls="flush-collaps8">
+                        <strong>¿Qué pasa si pago dos veces?</strong>
+                    </button>
+                </h2>
+                <div id="flush-collaps8" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">No se preocupe por eso. En caso de que suceda, su dinero será reembolsado en su totalidad.</div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" style="color: #00DDEB;" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collaps9" aria-expanded="false" aria-controls="flush-collaps9">
+                        <strong>¿Tendré días de prueba?</strong>
+                    </button>
+                </h2>
+                <div id="flush-collaps9" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">Desde el momento de la creación de su cuenta, tendrá 30 días de prueba antes de realizar el pago.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Pie de página -->
+<footer class="text-center activo2 rounded-top-4 p-3 d-none d-sm-block">
+    <div class="row row-cols-auto justify-content-center flex-wrap g-2 mt-2">
+        <p class="col">sUP 2025 |</p> 
+        <a href="mailto:upso.agency@gmail.com" class="text-decoration-none text-light ms-1 col" target="_blank">upso.agency@gmail.com |</a> 
+        <a href="tel:+5354214040" class="text-decoration-none text-light ms-1 col" target="_blank">+53 54214040</p></a>
+    </div>
+</footer>
+<footer class="text-center activo2 rounded-top-4 p-3 d-block d-sm-none">
+    <div class="mt-2">
+        <p class="m-1">sUP 2025</p> 
+        <a href="mailto:upso.agency@gmail.com" class="text-decoration-none text-light ms-1 d-block m-1" target="_blank">upso.agency@gmail.com</a> 
+        <a href="tel:+5354214040" class="text-decoration-none text-light ms-1 d-block m-1" target="_blank">+53 54214040</p></a>
+    </div>
+</footer>
+
+{% endif %}
+
+{% endblock %}

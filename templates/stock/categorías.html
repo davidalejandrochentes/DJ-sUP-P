@@ -1,0 +1,281 @@
+{% extends "layout/base.html" %}
+
+{% load static %}
+
+{% block 'title'%} Categorías de productos {% endblock %}
+
+{% block 'activo-stock' %}activo{% endblock %}
+{% block 'activador-stock' %}activo{% endblock %}
+
+
+{% block 'search' %}
+<form class="form-inline mw-100 navbar-search mx-auto d-none d-md-block" role="search" action="" method='GET'>
+    <div class="input-group d-flex" id="search-input">
+        <input class="form-control bg-light borde small" name="search" type="search" placeholder="Nombre de la categoría" aria-label="Search">
+        <div class="input-group-append borde rounded-end">
+            <button class="btn ojo text-light rounded-0 rounded-end border" type="submit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block 'content' %}
+<div class="container">
+    <div id="pagina" class="container mt-4 mt-sm-5 activo pt-3 pb-3 sombra">
+        <div class="d-flex flex-column align-items-center">
+            <h2 class="text-center suptitle">Categorías de productos</h2>
+            <p class="text-center text-white mt-0 mb-2" id="cantidad-categorias">Cantidad de categoría: {{ total }}</p>
+            <button id="start-tour" class="btn btn-outline-light rounded-pill mb-2">Iniciar Recorrido <img src="{% static "images/video-camera.png" %}"></button>
+        </div>
+    </div>
+</div>
+
+<div id="botones" class="container justify-content-center mt-2 d-none d-sm-flex">
+    <a class="btn boton btn-sm me-2" href="{% url "productos_stock_bajo_general" %}" role="button" id="bajo-stock">  
+        Bajo stock
+        <img class="" src="{% static "images/bell.png" %}">
+        <span class="rounded-pill bg-danger px-1">{{ productos_bajo_stock }}</span>
+    </a>
+
+    <a class="btn boton btn-sm me-2" href="{% url "nueva_categoria" %}" role="button" id="nueva">  
+        Nueva
+        <img src="{% static "images/discount.png" %}"> 
+    </a>
+
+    <a href="{% url 'exportar_productos_excel' %}" class="btn btn-sm boton" id="exportar">
+        Exportar Datos <img src="{% static 'images/excel.png' %}">
+    </a>
+</div>
+
+<div class="btn-group d-block d-sm-none mt-2">
+    <div class="d-flex justify-content-center">
+        <div class="btn-group">
+            <button type="button" class="btn btn-sm boton rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="operaciones">
+                Operaciones
+                <img src="{% static 'images/double-tap.png' %}">
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <a class="btn boton btn-sm me-2" href="{% url "productos_stock_bajo_general" %}" role="button">  
+                        Bajo stock
+                        <img class="" src="{% static "images/bell.png" %}">
+                        <span class="rounded-pill bg-danger px-1">{{ productos_bajo_stock }}</span>
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a href="" class="btn btn-sm boton">
+                        Exportar Datos <img src="{% static 'images/excel.png' %}">
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="btn boton btn-sm me-2" href="{% url "nueva_categoria" %}" role="button">  
+                        Nueva
+                        <img src="{% static "images/discount.png" %}"> 
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div id="search" class="container">
+    <form class="form-inline mw-100 navbar-search mx-auto d-block d-lg-none mt-3" role="search" action="" method='GET'>
+        <div class="input-group d-flex" id="search-mobile">
+            <input class="form-control bg-light borde small" name="search" type="search" placeholder="Nombre de la categoría" aria-label="Search">
+            <div class="input-group-append borde rounded-end">
+                <button class="btn ojo text-light rounded-0 rounded-end border" type="submit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="container mt-4">
+    <div class="row text-center justify-content-center px-5 px-sm-1" id="categorias">
+        {% for categoria in categorias %}
+        <div class="col-12 col-lg-2 sombra borde m-2 carta" id="categoria">
+            <a class="text-decoration-none" href="{% url "lista_productos" id=categoria.id %}">
+                <div class="testimonial-card p-4">
+                    <p class="m-0"><strong>{{ categoria.nombre }}</strong></p>
+                </div>
+            </a>
+            
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="pagination mt-2 justify-content-center">
+    <nav aria-label="Page navigation" id="pagination">
+        <ul class="pagination justify-content-center">
+            {% if categorias.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ categorias.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% for num in categorias.paginator.page_range %}
+            <li class="page-item {% if categorias.number == num %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">{{ num }}</a>
+            </li>
+            {% endfor %}
+            
+            {% if categorias.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ categorias.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const driver = window.driver.js.driver;
+        
+        // Detectar si es móvil
+        const isMobile = window.innerWidth <= 992;
+
+        // Pasos para escritorio
+        const stepsDesktop = [
+            {
+                element: '#search-input',
+                popover: {
+                    title: 'Buscar categoría',
+                    description: 'Puedes buscar por nombre de la categoría.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#cantidad-categorias',
+                popover: {
+                    title: 'Cantidad total de categorías',
+                    description: 'Esta es la cantidad total de categorías registradas en el sistema.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#bajo-stock',
+                popover: {
+                    title: 'Categorías con bajo stock',
+                    description: 'Aquí puedes ver las categorías que tienen productos con stock bajo, necesitando reposición.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#nueva',
+                popover: {
+                    title: 'Nueva categoría',
+                    description: 'Haz clic aquí para crear una nueva categoría de productos.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#exportar',
+                popover: {
+                    title: 'Exportar categorías',
+                    description: 'Exportará un fichero Excel con toda la información de las categorías registradas y sus productos.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#categorias',
+                popover: {
+                    title: 'Listado de categorías',
+                    description: 'Aquí puedes ver todas las categorías registradas. Haz clic en cualquier categoría para ver sus detalles y productos asociados.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#pagination',
+                popover: {
+                    title: 'Paginación',
+                    description: 'Esta es la paginación de las categorías, puedes navegar entre las páginas para ver todas las categorías.',
+                    position: 'bottom'
+                }
+            }
+        ];
+
+        // Pasos para móvil
+        const stepsMobile = [
+            {
+                element: '#cantidad-categorias',
+                popover: {
+                    title: 'Cantidad total de categorías',
+                    description: 'Esta es la cantidad total de categorías registradas en el sistema.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#operaciones',
+                popover: {
+                    title: 'Operaciones',
+                    description: 'Aquí puedes exportar, editar o eliminar categorías. Haz clic en el ícono correspondiente para realizar la acción deseada.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#search-mobile', 
+                popover: {
+                    title: 'Búsqueda de categorías',
+                    description: 'Puedes buscar por nombre de la categoría.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#categoria',
+                popover: {
+                    title: 'Listado de categorías',
+                    description: 'Aquí puedes ver todas las categorías registradas. Haz clic en cualquier categoría para ver sus detalles y productos asociados.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#pagination',
+                popover: {
+                    title: 'Paginación',
+                    description: 'Esta es la paginación de las categorías, puedes navegar entre las páginas para ver todas las categorías.',
+                    position: 'bottom'
+                }
+            }
+        ];
+
+        // Inicializar el tour con los pasos correspondientes
+        const tour = driver({
+            showProgress: true,
+            showButtons: ['next', 'previous', 'close'],
+            steps: isMobile ? stepsMobile : stepsDesktop
+        });
+    
+        const startBtn = document.getElementById("start-tour");
+        if (startBtn) {
+            startBtn.addEventListener("click", function () {
+                tour.drive();
+            });
+        }
+    });
+
+    // Actualizar el tour cuando cambie el tamaño de la ventana
+    window.addEventListener('resize', function() {
+        const isMobile = window.innerWidth <= 992;
+        if (driver.instance) {
+            driver.instance.reset();
+            driver.instance.defineSteps(isMobile ? stepsMobile : stepsDesktop);
+        }
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,105 @@
+ifconfig (localizar el inet)
+python manage.py runserver 0.0.0.0:8000
+nativefier --name innovaplast --full-screen --platform windows https://innovaplast.pythonanywhere.com
+
+python manage.py eliminar_cuentas_vencidas
+
+crear nuevo prollecto :    django-admin startproject nombre_del_proyecto
+version de django : django-admin --version
+python manage.py migrate
+levantar un servidor : python manage.py runserver
+nueva app dentro de un proyecto : python manage.py startapp comentarios
+python manage.py startapp usuarios apps/usuarios
+chequear si una app esta intalada : python manage.py check nombre_de_la_app
+migracion despues de trabajar con modelos : python manage.py makemigrations
+creacion de un super usuario : python manage.py createsuperuser
+
+
+intalar una documentacion par mi api : pip install coreapi
+intalar rest framework : pip install djangorestframework
+comunicar back con from : pip install django-cors-headers
+test unit : pip install pytest-django
+
+pip uninstall nombre_del_paquete_o_librer�a
+
+crear un entorno virtual : virtualenv venv    o tambien puedes usar    pip install virtualenv
+activar el entorno :  source venv/bin/activate    despues de estar activados es que puedes ver los paquetes intalados e intalar uno nuevo
+ver los paquetes intalados : pip list
+desactivar el entorno : deactivate
+exportar los requeriminetos de mi VENV : pip freeze > requirements.txt
+importar los requeriminetos de mi VENV : pip install -r requirements.txt
+
+mkvirtualenv --python=/usr/bin/python3.10 venv
+
+limpiar consola : cls
+
+uvicorn main:app --reload
+
+---------------------------------------------------------------------
+# This file contains the WSGI configuration required to serve up your
+# web application at http://davidale.pythonanywhere.com/
+# It works by setting the variable 'application' to a WSGI handler of some
+# description.
+#
+# The below has been auto-generated for your Django project
+
+import os
+import sys
+
+# add your project directory to the sys.path
+project_home = '/home/davidale/generator_password'
+if project_home not in sys.path:
+    sys.path.insert(0, project_home)
+
+# set environment variable to tell django where your settings.py is
+os.environ['DJANGO_SETTINGS_MODULE'] = 'password.settings'
+
+
+# serve django via WSGI
+from django.core.wsgi import get_wsgi_application
+application = get_wsgi_application()
+---------------------------------------------------------
+---------------------------------------------------------
+DATABASES = {
+    'default': {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "agenda",
+        "USER": "postgres",
+        "PASSWORD": "DAT121596#",
+        "HOST": "127.0.0.1",
+        "PORT": "3306",
+    }
+}
+---------------------------------------------------------
+---------------------------------------------------------
+
+
+sudo docker build -t devrrior/sup .    :crear el contenedor de docker
+sudo docker run -p 8000:8000 devrrior/sup    :levantar el contenedor de docker
+sudo docker run -v /home/david-alejandro/Escritorio/trabajo/python/Django/proyectos/sUP:/app -p 8000:8000 devrrior/sup    :levantar el contenedor auto reload
+sudo docker run -d -v /home/david-alejandro/Escritorio/trabajo/python/Django/proyectos/sUP:/app -p 8000:8000 devrrior/sup    :levantar el contenedor auto reload pero sin logs
+sudo docker --follow id-del-contenedor : ver los logs del contenedor
+sudo docker ps -a   :ver los contenedores de docker
+sudo docker stop sup    :detener el contenedor de docker
+sudo docker exec -it id-contenedor /bin/sh    :entrar al contenedor de docker
+sudo docker run --rm -v /home/david-alejandro/Escritorio/trabajo/python/Django/proyectos/sUP:/app -p 8000:8000 devrrior/sup    :levantar el contenedor auto reload pero sin logs y lo elimina al detenerse
+sudo docker image prune   : eliminar imagenes que no se usen
+
+sudo docker start sup    :iniciar el contenedor de docker
+sudo docker restart sup    :reiniciar el contenedor de docker
+sudo docker rm sup    :eliminar el contenedor de docker
+sudo docker images    :ver las imagenes de docker
+sudo docker rmi devrrior/sup    :eliminar la imagen de docker
+
+sudo docker-compose up
+sudo docker-compose up --build
+sudo docker-compose down
+sudo docker-compose up -d
+sudo docker-compose exec django sh :acceder al django desde el docker compose
+
+python manage.py runserver --settings=sUP.settings.development
+python manage.py runserver --settings=sUP.settings.production
+
+python manage.py collectstatic --no-input --settings=sUP.settings.production
+
+gunicorn --env DJANGO_SETTINGS_MODULE=sUP.settings.production sUP.wsgi:application --bind 127.0.0.01:8000

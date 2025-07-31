@@ -1,0 +1,58 @@
+{% extends "layout/base.html" %}
+
+{% load static %}
+
+{% block 'title'%} Estadísticas {% endblock %}
+
+{% block 'activo-reporte' %}activo{% endblock %}
+{% block 'activador-reporte' %}activo{% endblock %}
+
+{% block 'content' %}
+<div class="container">
+    <div id="pagina" class="container mt-4 mt-sm-5 activo pt-3 pb-3 sombra">
+        <h2 class="text-center suptitle">Estadísticas</h2>
+        <p class="text-center text-white mt-0 mb-2">Todas las herramientas para decisiones estratégicas</p>
+    </div>
+</div>
+
+<div id="opciones" class="container mt-4">
+    <div class="row text-center justify-content-center px-5 px-sm-1">
+        
+        <div class="col-12 col-lg-2 sombra borde m-2 carta">
+            <a class="text-decoration-none" href="{% url 'ganancias_por_cliente' %}">
+                <div class="testimonial-card p-4">
+                    <img src="{% static "images/001-bar-graphic.png" %}">
+                    <p class="m-0"><strong>Ganancias por cliente</strong></p>
+                </div>
+            </a>
+        </div>
+        <div class="col-12 col-lg-2 sombra borde m-2 carta">
+            <a class="text-decoration-none" href="{% url 'productos_mas_vendidos' %}">
+                <div class="testimonial-card p-4">
+                    <img src="{% static "images/002-bar-graphic-1.png" %}">
+                    <p class="m-0"><strong>Productos más vendidos</strong></p>
+                </div>
+            </a>
+        </div>
+        <div class="col-12 col-lg-2 sombra borde m-2 carta">
+            <a class="text-decoration-none" href="{% url 'ingresos_por_producto' %}">
+                <div class="testimonial-card p-4">
+                    <img src="{% static "images/003-bar-graphic-2.png" %}">
+                    <p class="m-0"><strong>Ingresos por producto</strong></p>
+                </div>
+            </a>
+        </div>
+        <div class="col-12 col-lg-2 sombra borde m-2 carta">
+            <a class="text-decoration-none" href="{% url 'productos_con_mayor_interes' %}">
+                <div class="testimonial-card p-4">
+                    <img src="{% static "images/004-bar-graphic-3.png" %}">
+                    <p class="m-0"><strong>Productos con mayor interés</strong></p>
+                </div>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,178 @@
+{% extends "layout/base.html" %}
+
+{% block 'title'%} Registro de Usuario {% endblock %}
+
+{% block 'activo-sign_up' %}activo{% endblock %}
+{% block 'activador-sign_up' %}activo{% endblock %}
+
+{% block 'styles' %}
+{% load static %}
+<link rel="stylesheet" href="{% static "css/forms.css" %}">
+{% endblock %}
+
+{% block 'content' %}
+<div class="container mt-5">
+    <h1 class="text-center">Registro de Usuario</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card p-2 rounded-3 sombra borde bg-body-tertiary mb-5">
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.username.id_for_label }}" class="form-label">Nombre de Usuario</label>
+                                    {{ form.username }}
+                                    {% if form.username.errors %}
+                                        <div class="alert alert-danger mt-1">
+                                            {{ form.username.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="{{ form.first_name.id_for_label }}" class="form-label">Nombre</label>
+                                    {{ form.first_name }}
+                                    {% if form.first_name.errors %}
+                                        <div class="alert alert-danger mt-1">
+                                            {{ form.first_name.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="{{ form.last_name.id_for_label }}" class="form-label">Apellidos</label>
+                                    {{ form.last_name }}
+                                    {% if form.last_name.errors %}
+                                        <div class="alert alert-danger mt-1">
+                                            {{ form.last_name.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="{{ form.email.id_for_label }}" class="form-label">Correo Electrónico</label>
+                                    {{ form.email }}
+                                    {% if form.email.errors %}
+                                        <div class="alert alert-danger mt-1">
+                                            {{ form.email.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.password1.id_for_label }}" class="form-label">Contraseña</label>
+                                    {{ form.password1 }}
+                                    {% if form.password1.errors %}
+                                        <div class="alert alert-danger mt-1">
+                                            {{ form.password1.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="{{ form.password2.id_for_label }}" class="form-label">Confirmar Contraseña</label>
+                                    {{ form.password2 }}
+                                    {% if form.password2.errors %}
+                                        <div class="alert alert-danger mt-1">
+                                            {{ form.password2.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="{{ form.telefono.id_for_label }}" class="form-label">Teléfono</label>
+                                    {{ form.telefono }}
+                                    {% if form.telefono.errors %}
+                                        <div class="alert alert-danger mt-1">
+                                            {{ form.telefono.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="{{ form.direccion.id_for_label }}" class="form-label">Dirección</label>
+                                    {{ form.direccion }}
+                                    {% if form.direccion.errors %}
+                                        <div class="alert alert-danger mt-1">
+                                            {{ form.direccion.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.denominación.id_for_label }}" class="form-label">Denominación</label>
+                                    {{ form.denominación }}
+                                    {% if form.denominación.errors %}
+                                        <div class="alert alert-danger mt-1">
+                                            {{ form.denominación.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="{{ form.cómo_nos_conoció.id_for_label }}" class="form-label">¿Cómo nos conoció?</label>
+                                    {{ form.cómo_nos_conoció }}
+                                    {% if form.cómo_nos_conoció.errors %}
+                                        <div class="alert alert-danger mt-1">
+                                            {{ form.cómo_nos_conoció.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <div class="form-check mb-3">
+                                    {{ form.aprobación_de_privacidad }}
+                                    <label class="form-check-label" for="{{ form.aprobación_de_privacidad.id_for_label }}">
+                                        Acepto las <a href="{% url 'politicas' %}" target="_blank">políticas de privacidad</a>
+                                    </label>
+                                    {% if form.aprobación_de_privacidad.errors %}
+                                        <div class="alert alert-danger mt-1">
+                                            {{ form.aprobación_de_privacidad.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if messages %}
+                            <div class="alert alert-danger mt-3">
+                                {% for message in messages %}
+                                    {{ message }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="text-center mt-4">
+                            <p class="text-center mt-2 mb-0 enlace"><a href="{% url 'log_in' %}">¡Ya tengo cuenta!</a></p> 
+                            <button type="submit" class="btn boton mt-3 w-100">Registrarse</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const usernameInput = document.getElementById('{{ form.username.id_for_label }}');
+        
+        // Convert username to lowercase when input changes
+        usernameInput.addEventListener('input', function() {
+            this.value = this.value.toLowerCase();
+        });
+    });
+</script>
+{% endblock %}

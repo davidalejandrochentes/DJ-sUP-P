@@ -1,0 +1,110 @@
+{% extends "layout/base.html" %}
+{% load static %}
+
+{% block 'title'%} Pago de Suscripción {% endblock %}
+
+{% block 'activo-pagar' %}activo{% endblock %}
+{% block 'activador-pagar' %}activo{% endblock %}
+{% block 'activo-pagar-1' %}activo{% endblock %}
+{% block 'activador-pagar-1' %}activo{% endblock %}
+
+{% block 'content' %}
+<div class="container my-4">
+    <div class="d-flex justify-content-center align-items-center">
+        <div class="p-4 rounded-3 sombra borde bg-body-tertiary">
+
+            <h2 class="text-center mb-4 colorea2">Estado de Suscripción</h2>
+            {% if user.último_pago %}
+                <p><b>Fecha de último pago:</b> {{ user.último_pago|date:"d/m/Y" }}</p>
+                {% if fecha_limite %}
+                    <p><b>Fecha límite de pago:</b> {{ fecha_limite|date:"d/m/Y" }}</p>
+                {% endif %}
+            {% endif %}
+            {% if user.nro_transacción == None %}
+                <p>Aún no ha realizado el primer pago</p>
+            {% else %} 
+                <p><b>Último Nro. de transacción:</b> {{ user.nro_transacción }}</p>   
+            {% endif %}
+
+            <div class="mt-4">
+                <h4>Instrucciones de Pago:</h4>
+                <ol class="list-group list-group-numbered mt-3">
+                    <li class="list-group-item">Autenticarse en la plataforma Transfermóvil.</li>
+                    <li class="list-group-item">Ir a operaciones y seleccionar transferencia.</li>
+                    <li class="list-group-item">Escanear el código QR o transferir a la cuenta <span class="bg-info rounded">9204</span>-<span class="bg-warning rounded">0699</span>-<span class="bg-secondary rounded">9589</span>-<span class="bg-primary rounded">8400</span> e ingresar el número de teléfono +53 54214040<br> <img class="d-block mx-auto my-2 img-fluid" style="max-height: 350px;" src="{% static "images/qr_tranfer.webp" %}"></li>
+                    <li class="list-group-item">Realizar la transferencia seleccionando la opción para que el destinatario reciba su número de móvil.</li>
+                    <li class="list-group-item">
+                        Ingrese el id de la transferencia especificado en el sms de confirmación.
+                        <div class="my-2">
+                            <form method="POST" action="{% url 'pagar' %}" id="transaccionForm" onsubmit="return validarTransaccion()">
+                                {% csrf_token %}
+                                <input 
+                                    type="text" 
+                                    name="nro_transaccion" 
+                                    id="nro_transaccion" 
+                                    class="form-control borde" 
+                                    placeholder="GJ234KH32HK3" 
+                                    required
+                                    pattern="[A-Z0-9]{1,13}"
+                                    maxlength="13"
+                                    title="Solo letras mayúsculas y números, máximo 13 caracteres"
+                                    oninput="this.value = this.value.toUpperCase()"
+                                >
+                                <div id="errorTransaccion" class="text-danger mt-2" style="display:none;"></div>
+                                <button type="submit" class="btn boton mt-2">Guardar Número de Transacción</button>
+                            </form>
+                        </div>
+                    </li>
+                    <li class="list-group-item">Una vez confirmado el pago, tu cuenta será actualizada en un plazo de 3 horas</li>
+                </ol>
+            </div>
+
+            <div class="mt-4">
+                <h4>En caso de error o problemas con el pago:</h4>
+                <ol class="list-group list-group-numbered mt-3">
+                    <li class="list-group-item">Contactar mediante correo electrónico a upso.agency@gmail.com y mencionar <br> tu nombre de usuario: {% if user.is_authenticated %}{{ user.username }}{% else %}[Tu nombre de usuario]{% endif %} seguido de la situación que se le presenta</li>
+                    <li class="list-group-item">Contactar mediante WhatsApp o SMS al +5354214040</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function validarTransaccion() {
+    const input = document.getElementById('nro_transaccion');
+    const errorDiv = document.getElementById('errorTransaccion');
+    const valor = input.value.trim().toUpperCase();
+
+    // Limpiar mensajes de error previos
+    errorDiv.style.display = 'none';
+    errorDiv.textContent = '';
+
+    // Validar longitud
+    if (valor.length === 0) {
+        errorDiv.textContent = 'El número de transacción no puede estar vacío.';
+        errorDiv.style.display = 'block';
+        return false;
+    }
+
+    if (valor.length > 13) {
+        errorDiv.textContent = 'El número de transacción no puede exceder 13 caracteres.';
+        errorDiv.style.display = 'block';
+        return false;
+    }
+
+    // Validar solo letras mayúsculas y números
+    const regex = /^[A-Z0-9]+$/;
+    if (!regex.test(valor)) {
+        errorDiv.textContent = 'El número de transacción solo puede contener letras mayúsculas y números.';
+        errorDiv.style.display = 'block';
+        return false;
+    }
+
+    // Si pasa todas las validaciones, actualizar el valor en mayúsculas
+    input.value = valor;
+    return true;
+}
+</script>
+
+{% endblock %}

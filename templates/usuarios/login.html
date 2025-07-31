@@ -1,0 +1,96 @@
+{% extends "layout/base.html" %}
+
+{% block 'title'%} Iniciar Sesión {% endblock %}
+
+{% block 'activo-login' %}activo{% endblock %}
+{% block 'activador-login' %}activo{% endblock %}
+
+{% block 'styles' %}
+{% load static %}
+<link rel="stylesheet" href="{% static "css/forms.css" %}">
+{% endblock %}
+
+{% block 'content' %}
+<div class="container mt-5">
+
+    <h1 class="text-center">Acceda al Sistema</h1>
+    <div class="d-flex justify-content-center align-items-center">
+    <form  class=" p-5 rounded-3 sombra borde bg-body-tertiary" actions="{% url "log_in" %}" method="POST">
+      {% csrf_token %}
+      {% if messages %}
+        <ul class="messages list-unstyled">
+            {% for message in messages %}
+                <div {% if message.tags %} class="alert alert-{{ message.tags }} alerta text-center" role="alert"{% endif %}>{{ message|safe }}</div>
+            {% endfor %}
+        </ul>
+      {% endif %}
+        <h3 class="text-center mb-4">sUP</h3>  
+        
+        <label for="username" class="form-label">Nombre de Usuario:</label>
+        <div class="input-group mb-3">
+        <input id="username" type="text" class="form-control" name="username" placeholder="Nombre de Usuario" required>
+        </div>
+
+        <label for="password" class="form-label">Contraseña:</label>
+        <div class="input-group mb-3">
+          <input id="password" type="password" class="form-control" name="password" placeholder="Contraseña">
+          <button class="btn ojo" type="button" onclick="togglePassword()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+          </svg></button>
+        </div>
+        <script>
+          function togglePassword() {
+            var passwordInput = document.getElementById("password");
+            if (passwordInput.type === "password") {
+              passwordInput.type = "text";
+            } else {
+              passwordInput.type = "password";
+            }
+          }
+
+          // Prevent uppercase and provide visual feedback
+          document.addEventListener('DOMContentLoaded', function() {
+            const usernameInput = document.getElementById('username');
+            
+            usernameInput.addEventListener('keypress', function(e) {
+              // Check if the pressed key is an uppercase letter
+              if (e.key >= 'A' && e.key <= 'Z') {
+                // Prevent the default uppercase input
+                e.preventDefault();
+                
+                // Get the lowercase version of the key
+                const lowercaseKey = e.key.toLowerCase();
+                
+                // Insert the lowercase letter at the current cursor position
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+                this.value = this.value.slice(0, start) + lowercaseKey + this.value.slice(end);
+                
+                // Move cursor to the correct position
+                this.setSelectionRange(start + 1, start + 1);
+                
+                // Optional: Briefly flash the input to provide visual feedback
+                this.style.backgroundColor = '#ffcccc';
+                setTimeout(() => {
+                  this.style.backgroundColor = '';
+                }, 200);
+              }
+            });
+
+            // Additional input event to ensure lowercase
+            usernameInput.addEventListener('input', function() {
+              this.value = this.value.toLowerCase();
+            });
+          });
+        </script>
+        <p class="text-center mt-2 mb-0 enlace">
+          <a href="https://api.whatsapp.com/send?phone=5354214040&text=¡Olvidé%20mi%20contraseña!" target="_blank">¡Olvide la contraseña!</a>
+        </p>
+        <p class="text-center mt-2 mb-0 enlace"><a href="{% url 'registro' %}">¡Regístrate ahora!</a></p>            
+        <input class="btn boton mt-3" type="submit" value="Verificar">
+    </form>
+    </div>
+
+</div>
+{% endblock %}

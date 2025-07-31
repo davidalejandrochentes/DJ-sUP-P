@@ -1,0 +1,188 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <meta name="description" content="Optimiza la gestión de tu negocio con nuestro software integral: control de stock, gestión de clientes y proveedores, registro de ventas, estadísticas clave y consejos para tomar decisiones inteligentes. ¡Haz crecer tu negocio de manera eficiente!">
+        <meta name="keywords" content="software gestión negocio, control de stock, gestión de clientes, gestión de proveedores, registro de ventas, estadísticas negocio, alertas stock, consejos para negocios, herramientas para pymes, optimizar negocio">
+        <meta name="author" content="UPSO" />
+        <link rel="icon" href="{% static "images/sUP.png" %}" type="image/png" sizes="16x16">
+        <title>{% block 'title' %}sup{% endblock %}</title>
+        <link rel="stylesheet" href="{% static "css/Bootstrap.css" %}">
+        <link rel="stylesheet" href="{% static "css/styles.css" %}">
+        <script src="{% static "js/scrollreveal.js" %}"></script>
+        <script src="{% static "js/jquery-3.7.1.js" %}"></script>
+        <link href="{% static "css/select2.css" %}" rel="stylesheet" />
+        <link rel="stylesheet" href="{% static "css/select2-bootstrap-5-theme.css" %}" />
+        <link rel="stylesheet" href="{% static "css/driver.css" %}" />
+        {% block 'styles' %}{% endblock %}
+    </head>
+    <body class="">
+        
+        {% if user.is_authenticated %}
+        <nav class="navbar navbar-expand-lg bg-body-tertiary nav-style rounded-bottom-4 p-2 ps-sm-4 pe-sm-5 pt-3 pb-3 sticky-top">
+            <div class="container-fluid">
+
+                <ul class="navbar-nav me-auto mb-2 mt-2 mt-md-0 mb-lg-0 d-block d-lg-none">
+                    <li class="nav-item text-center activo">
+                        <a class="nav-link rounded-pill links-nav p-1 fs-5 activo" href="{% url "inicio" %}"><b class="">sUP</b></a>
+                    </li>
+                </ul>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    
+                    <ul class="navbar-nav me-auto mb-2 mt-2 mt-md-0 mb-lg-0 ms-3">
+                        <li class="nav-item d-none d-lg-block {% block 'activo-proveedores' %}{% endblock %}">
+                            <a class="nav-link rounded-pill links-nav ps-2 {% block 'activador-proveedores' %}{% endblock %}" href="{% url "proveedores" %}">Proveedores</a>
+                        </li>
+                        <li class="d-lg-none">
+                            <a class="nav-link colorea2 ps-2" href="{% url "proveedores" %}">Proveedores</a>
+                        </li>
+
+                        <li class="nav-item d-none d-lg-block {% block 'activo-clientes' %}{% endblock %}">
+                            <a class="nav-link rounded-pill links-nav ps-2 {% block 'activador-clientes' %}{% endblock %}" href="{% url "clientes" %}">Clientes</a>
+                        </li>
+                        <li class="d-lg-none">
+                            <a class="nav-link colorea2 ps-2" href="{% url "clientes" %}">Clientes</a>
+                        </li>
+
+                        <li class="nav-item d-none d-lg-block {% block 'activo-stock' %}{% endblock %}">
+                            <a class="nav-link rounded-pill links-nav ps-2 {% block 'activador-stock' %}{% endblock %}" href="{% url "categorias_productos" %}">Inventario</a>
+                        </li>
+                        <li class="d-lg-none">
+                            <a class="nav-link colorea2 ps-2" href="{% url "categorias_productos" %}">Inventario</a>
+                        </li>
+
+                        <li class="nav-item d-none d-lg-block {% block 'activo-venta' %}{% endblock %}">
+                            <a class="nav-link rounded-pill links-nav ps-2 {% block 'activador-venta' %}{% endblock %}" href="{% url "venta" %}">Ventas</a>
+                        </li>
+                        <li class="d-lg-none">
+                            <a class="nav-link colorea2 ps-2" href="{% url "venta" %}">Ventas</a>
+                        </li>
+
+                        <li class="nav-item d-none d-lg-block {% block 'activo-reporte' %}{% endblock %}">
+                            <a class="nav-link rounded-pill links-nav ps-2 {% block 'activador-reporte' %}{% endblock %}" href="{% url 'reporte' %}">Estadísticas</a>
+                        </li>
+                        <li class="d-lg-none">
+                            <a class="nav-link colorea2 ps-2" href="{% url 'reporte' %}">Estadísticas</a>
+                        </li>
+
+                        <li class="nav-item d-none d-lg-block {% block 'activo-ia' %}{% endblock %}">
+                            <a class="nav-link rounded-pill links-nav ps-2 {% block 'activador-ia' %}{% endblock %}" href="{% url 'consejos' %}">Notificaciones</a>
+                        </li>
+                        <li class="d-lg-none">
+                            <a class="nav-link colorea2 ps-2" href="{% url 'consejos' %}">Notificaciones</a>
+                        </li>
+
+                        <li class="d-lg-none">
+                            <a class="nav-link colorea2 ps-2" href="{% url "pagar" %}">Pagar</a>
+                        </li>
+                        
+                        <li class="d-lg-none">
+                            <a class="nav-link colorea2 ps-2" href="{% url "mis_datos" %}">Mis datos</a>
+                        </li>
+
+                        <li class="d-lg-none">
+                            <a class="nav-link colorea2 ps-2" href="{% url "politicas" %}">Políticas de Privacidad</a>
+                        </li>
+
+                        <li class="d-lg-none">
+                            <a class="nav-link colorea2 ps-2" href="{% url "log_out" %}">Salir</a>
+                        </li>
+
+                    </ul>
+                    
+                    {% block 'search' %}{% endblock %}
+                    
+                    <div class=" d-none d-md-block dropstart" href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-person-circle boton dropdown-toggle" viewBox="0 0 16 16" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                        </svg>
+                        <ul class="dropdown-menu">
+                            <li class="nav-item {% block 'activo-mis-datos-2' %}{% endblock %}">
+                                <a class="dropdown-item links-nav ps-2 {% block 'activador-mis-datos-2' %}{% endblock %}" href="{% url "mis_datos" %}">Mis datos</a>
+                            </li>
+                            <li class="nav-item {% block 'activo-pagar' %}{% endblock %}">
+                                <a class="dropdown-item links-nav ps-2 {% block 'activador-pagar' %}{% endblock %}" href="{% url "pagar" %}">Pagar</a>
+                            </li>
+                            <li class="nav-item {% block 'activo-politc' %}{% endblock %}">
+                                <a class="dropdown-item links-nav ps-2 {% block 'activador-politc' %}{% endblock %}" href="{% url "politicas" %}">Políticas de Privacidad</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="dropdown-item links-nav ps-2" href="{% url "log_out" %}">Salir</a>
+                            </li>
+                        </ul>      
+                    </div>
+
+                </div>
+            </div>
+        </nav>
+        {% else %}
+        <nav class="navbar navbar-expand-lg bg-body-tertiary nav-style rounded-bottom-4 p-2 pt-3 pb-3 ps-sm-5 pe-sm-5 sticky-top">
+            <div class="container-fluid">
+                
+                <ul class="navbar-nav me-auto mb-2 mt-2 mt-md-0 mb-lg-0">
+                    <li class="nav-item text-center activo">
+                        <a class="nav-link rounded-pill links-nav p-1 fs-5 activo" href="{% url "inicio" %}"><b class="">sUP</b></a>
+                    </li>
+                </ul>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mt-2 mt-md-0 mb-lg-0 ms-3 ms-auto">
+                        
+                        <li class="nav-item d-none d-lg-block {% block 'activo-login' %}{% endblock %}">
+                            <a class="nav-link links-nav ps-2 {% block 'activador-login' %}{% endblock %}" href="{% url "log_in" %}">Iniciar sección</a>
+                        </li>
+                        <li class="d-lg-none">
+                            <a class="nav-link colorea2 ps-2" href="{% url "log_in" %}">Iniciar sección</a>
+                        </li>
+                        
+                        <li class="nav-item d-none d-lg-block {% block 'activo-sign_up' %}{% endblock %}">
+                            <a class="nav-link links-nav ps-2 {% block 'activador-sign_up' %}{% endblock %}" href="{% url 'registro' %}">Registrarse</a>
+                        </li>
+                        <li class="d-lg-none">
+                            <a class="nav-link colorea2 ps-2" href="{% url 'registro' %}">Registrarse</a>
+                        </li>
+                        
+                        <li class="nav-item d-none d-lg-block {% block 'activo-politica' %}{% endblock %}">
+                            <a class="nav-link links-nav ps-2 {% block 'activador-politica' %}{% endblock %}" href="{% url "politicas" %}">Políticas de Privacidad</a>
+                        </li>
+                        <li class="d-lg-none">
+                            <a class="nav-link colorea2 ps-2" href="{% url "politicas" %}">Políticas de Privacidad</a>
+                        </li>
+                    </ul>
+                </div>
+                
+            </div>
+        </nav>
+        {% endif %}
+        
+        {% if mostrar_alerta %}
+            <div class="alert alert-danger text-center mt-4 container" role="alert">
+                {% if fecha_limite %}
+                    Usted debe pagar antes de {{ fecha_limite|date:"d/m/Y" }}
+                {% endif %}
+            </div>
+        {% endif %}       
+        
+        <main>
+            {% block 'content' %}{% endblock %}
+        </main>
+        
+        {% block 'scripts' %}{% endblock %}
+        <script src="{% static "js/Bootstrap.js" %}"></script>
+        <script src="{% static "js/main.js" %}"></script>
+        <script src="{% static "js/select2.js" %}"></script>
+        <script src="{% static "js/driver.js.iife.js" %}"></script>
+
+    </body>
+    </html>

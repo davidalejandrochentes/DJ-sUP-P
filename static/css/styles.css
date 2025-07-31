@@ -1,0 +1,166 @@
+@font-face {
+    font-family: 'PermanentMarker';
+    src: url('/static/fonts/PermanentMarker-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Oswald';
+    src: url('/static/fonts/Oswald-VariableFont_wght.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Oswald-Bold';
+    src: url('/static/fonts/Oswald-Bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'VarelaRound-Regular';
+    src: url('/static/fonts/VarelaRound-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body{
+    font-family: 'VarelaRound-Regular', Arial, sans-serif;
+    background-color: #ffffff;
+}
+
+.boton{
+    border-radius: 1em;
+    box-shadow: rgba(151, 65, 252, 0.8) 0 10px 20px -8px;
+    background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEb);
+    color: white;
+    opacity: 1;
+}
+
+.boton:hover{
+    opacity: 0.5;
+    color: white;
+}
+
+.ojo{
+    box-shadow: rgba(151, 65, 252, 0.8) 0 10px 20px -8px;
+    background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEb);
+    color: white;
+    opacity: 1;
+}
+
+.ojo:hover{
+    opacity: 0.5;
+    color: white;
+}
+
+.sombra{
+    border-radius: 1em;
+    box-shadow: rgba(151, 65, 252, 0.8) 0 10px 20px -8px;
+}
+
+h1 {
+    text-align: center;
+    background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: 'PermanentMarker', sans-serif;
+}
+
+h3 {
+    text-align: center;
+    background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: 'Oswald-Bold', sans-serif;
+}
+
+.coloreado {
+    text-align: center;
+    background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: 'Oswald-Bold', sans-serif;
+}
+
+.colorea2 {
+    text-align: center;
+    background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: 'PermanentMarker', sans-serif;
+}
+
+.morado{
+    color: #5B42F3;
+}
+
+.suptitle{
+    font-family: 'PermanentMarker', sans-serif;
+}
+
+.nav-item{
+    border-radius: 0.5em;
+}
+
+.nav-item:hover{
+    background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEb);
+    border-radius: 1em;
+    transition: all 0.3s ease;
+}
+
+.links-nav {
+    font-family: 'Oswald', sans-serif;
+    background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEb);
+    background-clip: text;
+    color: transparent;
+    transition: all 0.3s ease;
+    display: inline-block; /* Asegura que la propiedad background-color pueda aplicarse */
+}
+
+.links-nav:hover {
+    color: white !important; /* Color de texto blanco en hover */
+    transition: all 0.3s ease;
+}
+
+.links-nav-2 {
+    font-family: 'Oswald', sans-serif;
+    background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEb);
+    background-clip: text;
+    color: transparent;
+    transition: all 0.3s ease;
+    display: inline-block; /* Asegura que la propiedad background-color pueda aplicarse */
+}
+
+.nav-style{
+    box-shadow: rgba(151, 65, 252, 0.8) 0 10px 20px -8px;
+}
+
+.borde{
+    border: 2px solid #9340ff
+}
+
+.activo{
+    background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEb);
+    border-radius: 1em;
+    color: white;
+}
+
+.activo2{
+    background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEb);
+    color: white;
+}
+
+.carta p {
+    color: #5B42F3 !important;
+}
+
+.carta:hover {
+    background-image: linear-gradient(to right, #AF40FF, #5B42F3 50%, #00DDEb);
+}
+
+.carta:hover p {
+    color: aliceblue !important; /* Fuerza el color en hover */
+}

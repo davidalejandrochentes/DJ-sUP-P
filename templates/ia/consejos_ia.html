@@ -1,0 +1,136 @@
+{% extends "layout/base.html" %}
+{% load static %}
+
+{% block 'title'%} Notificaciones {% endblock %}
+
+{% block 'activo-ia' %}activo{% endblock %}
+{% block 'activador-ia' %}activo{% endblock %}
+
+{% block 'content' %}
+<div class="container">
+    <div id="pagina" class="container mt-4 mt-sm-5 activo pt-3 pb-3 sombra">
+        <h2 class="text-center suptitle">Notificaciones</h2>
+        <p class="text-center text-white mt-0 mb-2">Mantente al día y toma decisiones inteligentes para tu negocio</p>
+    </div>
+
+    <div class="container mt-3">
+        <p class="text-center m-0 fw-bold">Leyenda de Notificaciones</p>
+        <div class="row row-cols-auto justify-content-center flex-wrap g-2">
+            <div class="col">
+                <p class="m-0"> <button type="button" class="btn" style="background-color: #cff4fc;"></button> Estadística</p>
+            </div>
+            <div class="col">
+                <p class="m-0"> <button type="button" class="btn" style="background-color: #d1e7dd;"></button> Logro</p>
+            </div>
+            <div class="col">
+                <p class="m-0"> <button type="button" class="btn" style="background-color: #e2e3e5;"></button> General</p>
+            </div>
+            <div class="col">
+                <p class="m-0"> <button type="button" class="btn" style="background-color: #fff3cd;"></button> Sugerencia</p>
+            </div>
+            <div class="col">
+                <p class="m-0"> <button type="button" class="btn" style="background-color: #f8d7da;"></button> Importante</p>
+            </div>
+        </div>
+    </div>
+    
+    {% if consejos %}
+        {% for consejo in consejos %}
+            <div class="card m-3 borde rounded-3">
+                <div class="card-body">
+                    {% if consejo.tipo == 'alerta' %}
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i> {{ consejo.mensaje }}
+                        </div>
+                    {% elif consejo.tipo == 'ventas' %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-chart-line"></i> {{ consejo.mensaje }}
+                        </div>
+                    {% elif consejo.tipo == 'productos_top' %}
+                        <div class="alert alert-success">
+                            <i class="fas fa-trophy"></i> {{ consejo.mensaje }}
+                        </div>
+                    {% elif consejo.tipo == 'sin_movimiento' %}
+                        <div class="alert alert-secondary">
+                            <i class="fas fa-box"></i> {{ consejo.mensaje }}
+                        </div>
+                        {% elif consejo.tipo == 'rentabilidad' %}
+                        <div class="alert alert-danger">
+                            <i class="fas fa-percentage"></i> {{ consejo.mensaje }}
+                        </div>
+                    {% elif consejo.tipo == 'tendencia' %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-chart-bar"></i> {{ consejo.mensaje }}
+                        </div>
+                    {% elif consejo.tipo == 'clientes' %}
+                        <div class="alert alert-success">
+                            <i class="fas fa-users"></i> {{ consejo.mensaje }}
+                        </div>
+                    {% elif consejo.tipo == 'inventario' %}
+                        <div class="alert alert-warning">
+                            <i class="fas fa-warehouse"></i> {{ consejo.mensaje }}
+                        </div>
+                    {% elif consejo.tipo == 'dias' %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-calendar"></i> {{ consejo.mensaje }}
+                        </div>
+                    {% elif consejo.tipo == 'precios' %}
+                        <div class="alert alert-danger">
+                            <i class="fas fa-tags"></i> {{ consejo.mensaje }}
+                        </div>
+                        {% elif consejo.tipo == 'categorias' %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-th-list"></i> {{ consejo.mensaje }}
+                        </div>
+                    {% elif consejo.tipo == 'rotacion' %}
+                        <div class="alert alert-warning">
+                            <i class="fas fa-sync"></i> {{ consejo.mensaje }}
+                        </div>
+                    {% elif consejo.tipo == 'horario' %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-clock"></i> {{ consejo.mensaje }}
+                        </div>
+                    {% elif consejo.tipo == 'proveedores' %}
+                        <div class="alert alert-primary">
+                            <i class="fas fa-truck"></i> {{ consejo.mensaje }}
+                        </div>
+                    {% elif consejo.tipo == 'tendencia_categoria' %}
+                        <div class="alert alert-success">
+                            <i class="fas fa-arrow-trend-up"></i> {{ consejo.mensaje }}
+                        </div>
+                    {% elif consejo.tipo == 'fidelizacion' %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-heart"></i> {{ consejo.mensaje }}
+                        </div>    
+                        {% elif consejo.tipo == 'temporada' %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-calendar-alt"></i> {{ consejo.mensaje }}
+                        </div>
+                    {% elif consejo.tipo == 'margen_alto' %}
+                        <div class="alert alert-success">
+                            <i class="fas fa-chart-pie"></i> {{ consejo.mensaje }}
+                        </div>
+                    {% elif consejo.tipo == 'diversificacion' %}
+                        <div class="alert alert-warning">
+                            <i class="fas fa-random"></i> {{ consejo.mensaje }}
+                        </div>
+                    {% elif consejo.tipo == 'ticket_promedio' %}
+                        <div class="alert alert-primary">
+                            <i class="fas fa-receipt"></i> {{ consejo.mensaje }}
+                        </div>     
+                    {% else %}
+                        <div class="alert alert-primary">
+                            <i class="fas fa-lightbulb"></i> {{ consejo.mensaje }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-info mt-3 raunder-3 borde text-center">
+            No hay notificaciones en este momento. Continúa registrando ventas y gestionando tu inventario para recibir recomendaciones personalizadas.
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,176 @@
+{% extends "layout/base.html" %}
+
+{% load static %}
+
+{% block 'title'%} Proveedor {% endblock %}
+
+{% block 'activo-proveedores' %}activo{% endblock %}
+{% block 'activador-proveedores' %}activo{% endblock %}
+
+{% block 'content' %}
+<div class="container mt-4">
+
+    <div class="container d-flex">
+        <a class="morado" href="{% url "proveedores" %}" role="button">  
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+            </svg>
+        </a>
+    </div>
+
+    <h1 class="text-center">{{ proveedor.nombre }}</h1>
+    <div class="d-flex">
+        <button id="start-tour" class="btn mx-auto boton mb-3">Iniciar Recorrido <img src="{% static "images/video-camera.png" %}"></button>
+    </div>
+    <div class="row justify-content-center align-items-center px-3 px-sm-1">
+        <div class="col-12 col-sm-5 p-4 rounded-3 sombra borde bg-body-tertiary m-2">
+            <img class="d-block mx-auto my-2" src="{% static "images/proveedor-plus.png" %}">
+            <div id="info-proveedor">
+                <p class="m-1"><b>Nombre:</b> {{ proveedor.nombre }}</p>
+                <p class="m-1"><b>Teléfono:</b> {{ proveedor.teléfono }}</p>
+                <p class="m-1"><b>Correo electrónico:</b> {{ proveedor.email|default:'' }}</p>
+                <p class="m-1"><b>Dirección:</b> {{ proveedor.dirección|default:'' }}</p>
+                <p class="m-1"><b>Nota:</b> {{ proveedor.notas|default:'' }}</p>
+            </div>
+            
+            <a class="btn boton btn-sm m-1" href="{% url "editar_proveedor" id=proveedor.id %}" role="button" id="editar">
+                Editar
+                <img class="" src="{% static "images/pages.png" %}">
+            </a>
+            <button type="button" class="btn btn-danger rounded-pill btn-sm m-1" data-bs-toggle="modal" data-bs-target="#modal-eliminar{{ proveedor.id }}" id="eliminar">
+                Eliminar 
+                <img class="" src="{% static "images/trash.png" %}">
+            </button>
+            <div class="modal fade" id="modal-eliminar{{ proveedor.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Atención</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Esta seguro de <b>eliminar</b> al proveedor <b>{{ proveedor.nombre }}</b>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-danger rounded-pill" href="{% url "eliminar_proveedor" id=proveedor.id %}">Estoy seguro</a>
+                        <button type="button" class="btn boton" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-5 p-4 card rounded-3 sombra borde bg-body-tertiary m-2">
+            <div class="card-body">
+                <!-- Formulario para agregar palabra clave -->
+                <form action="{% url 'agregar_palabra_clave_proveedor' proveedor.id %}" method="POST" class="mb-3">
+                    {% csrf_token %}
+                    <div class="input-group" id="input-etiqueta">
+                        <input type="text" name="palabra" class="form-control" placeholder="Nueva Etiqueta" required>
+                        <button type="submit" class="btn boton">Agregar</button>
+                    </div>
+                </form>
+    
+                <!-- Lista de palabras clave -->
+                <div class="d-flex flex-wrap gap-2" id="etiquetas">
+                    {% for palabra in proveedor.palabras_clave.all %}
+                        <div class="badge boton p-2 d-flex align-items-center">
+                            {{ palabra.palabra }}
+                            <a href="{% url 'eliminar_palabra_clave_proveedor' proveedor.id palabra.id %}" 
+                                class="ms-2 text-white text-decoration-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                                </svg>
+                            </a>
+                        </div>
+                    {% empty %}
+                        <p class="text-muted">No hay palabras clave asociadas</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const driver = window.driver.js.driver;
+        
+        // Configurar el idioma
+        driver.defaultOptions = {
+            i18n: {
+                next: 'Siguiente',
+                previous: 'Anterior',
+                close: 'Cerrar'
+            }
+        };
+
+        const steps = [
+            {
+                element: '#info-proveedor',
+                popover: {
+                    title: 'Información del proveedor',
+                    description: 'Aquí aparecerán todos los datos referentes al proveedor. Le recomendamos que, si necesita añadir información, lo haga en el campo de notas.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#editar',
+                popover: {
+                    title: 'Editar proveedor',
+                    description: 'Haz clic aquí para acceder al formulario de edición del proveedor.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#eliminar',
+                popover: {
+                    title: 'Eliminar proveedor',
+                    description: 'Haz clic aquí para eliminar al proveedor.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#input-etiqueta',
+                popover: {
+                    title: 'Entrada de etiquetas',
+                    description: 'Se utilizarán para localizar más fácilmente al proveedor.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#etiquetas',
+                popover: {
+                    title: 'Listado de etiquetas',
+                    description: 'Esta es la lista de etiquetas con las que has marcado al proveedor para su posterior filtrado.',
+                    position: 'bottom'
+                }
+            },
+        ];
+
+        // Inicializar el tour
+        const tour = driver({
+            showProgress: true,
+            showButtons: true,
+            steps: steps
+        });
+    
+        const startBtn = document.getElementById("start-tour");
+        if (startBtn) {
+            startBtn.addEventListener("click", function () {
+                tour.drive();
+            });
+        }
+    });
+
+    // Actualizar el tour cuando cambie el tamaño de la ventana
+    window.addEventListener('resize', function() {
+        if (driver.instance) {
+            driver.instance.reset();
+            driver.instance.defineSteps(steps);
+        }
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,353 @@
+{% extends "layout/base.html" %}
+
+{% load static %}
+
+{% block 'title'%} Ingresos por producto {% endblock %}
+
+{% block 'activo-reporte' %}activo{% endblock %}
+{% block 'activador-reporte' %}activo{% endblock %}
+
+{% block 'content' %}
+<div class="container">
+    <div id="pagina" class="container mt-4 mt-sm-5 activo pt-3 pb-3 sombra">
+        <div class="d-flex flex-column align-items-center">
+            <h2 class="text-center suptitle">Ingresos por producto</h2>
+            <p class="text-center text-white mt-0 mb-2" id="total-productos">Total de productos: {{ total_productos }}</p>
+            <button id="start-tour" class="btn btn-outline-light rounded-pill mb-2">Iniciar Recorrido <img src="{% static "images/video-camera.png" %}"></button>
+        </div>
+    </div>
+</div>
+
+<div id="botones" class="container d-flex justify-content-between mt-2">
+    <a class="morado" href="{% url "reporte" %}" role="button">  
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+        </svg>
+    </a>
+</div>
+
+<div class="container mt-4 d-block d-sm-none">
+    <h3 class="colorea2">Coloque el dispositivo horizontalmente para ver la gráfica</h3>
+</div>
+
+<!-- Selector de período -->
+<div class="container mt-4">
+    <div class="card borde" id="selector-periodo">
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-center justify-content-center">
+                <div class="col-auto">
+                    <label for="periodo" class="col-form-label">Ver ingresos de:</label>
+                </div>
+                <div class="col-auto">
+                    <select name="periodo" id="periodo" class="form-select" onchange="this.form.submit()">
+                        <option value="historico" {% if periodo == 'historico' %}selected{% endif %}>Todo el historial</option>
+                        <option value="semana" {% if periodo == 'semana' %}selected{% endif %}>Última semana</option>
+                        <option value="mes" {% if periodo == 'mes' %}selected{% endif %}>Último mes</option>
+                        <option value="trimestre" {% if periodo == 'trimestre' %}selected{% endif %}>Último trimestre</option>
+                        <option value="semestre" {% if periodo == 'semestre' %}selected{% endif %}>Último semestre</option>
+                        <option value="anio" {% if periodo == 'anio' %}selected{% endif %}>Último año</option>
+                    </select>
+                </div>
+                <!-- Mantener la página actual al cambiar el período -->
+                {% if request.GET.page %}
+                <input type="hidden" name="page" value="{{ request.GET.page }}">
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Gráfico -->
+<div class="container mt-4 d-none d-sm-block">
+    <div class="card borde" id="grafico">
+        <div class="card-body">
+            <canvas id="ingresosChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Vista móvil: lista vertical -->
+<div class="d-block mt-3 d-sm-none px-5">
+    <div class="d-flex justify-content-end mb-3">
+        <a href="{% url 'exportar_ingresos_producto_excel' %}?periodo={{ periodo }}" class="btn btn-sm boton rounded-pill" id="exportar-lista">
+            Exportar Datos <img src="{% static 'images/excel.png' %}">
+        </a>
+    </div>
+    {% for producto in productos %}
+    <div class="card borde mb-3 sombra" id="lista">
+        <div class="card-body p-3 text-center">
+            <h5 class="card-title mb-2 color-texto">{{ producto.nombre_mostrado }}</h5>
+            <p class="mb-1"><strong>Código:</strong> {{ producto.producto__código|default:'-' }}</p>
+            <p class="mb-1"><strong>Categoría:</strong> {{ producto.producto__categoría__nombre|default:'-' }}</p>
+            <p class="mb-0"><strong>Ingresos:</strong> $ {{ producto.total_ingresos|floatformat:2 }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Tabla de productos -->
+<div class="container mt-4 d-none d-sm-block">
+    <div class="card borde" id="tabla">
+        <div class="card-body">
+            <div class="d-flex justify-content-end mb-3">
+                <a href="{% url 'exportar_ingresos_producto_excel' %}?periodo={{ periodo }}" class="btn btn-sm boton rounded-pill" id="exportar-tabla">
+                    Exportar Datos <img src="{% static 'images/excel.png' %}">
+                </a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Producto</th>
+                            <th scope="col">Código</th>
+                            <th scope="col">Categoría</th>
+                            <th scope="col">Ingresos ($)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for producto in productos %}
+                        <tr>
+                            <td>{{ producto.nombre_mostrado }}</td>
+                            <td>{{ producto.producto__código|default:'-' }}</td>
+                            <td>{{ producto.producto__categoría__nombre|default:'-' }}</td>
+                            <td>$ {{ producto.total_ingresos|floatformat:2 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Paginación -->
+<div class="pagination mt-4 justify-content-center">
+    <nav aria-label="Page navigation" id="pagination">
+        <ul class="pagination justify-content-center">
+            {% if productos.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ productos.previous_page_number }}{% if periodo %}&periodo={{ periodo }}{% endif %}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% for num in productos.paginator.page_range %}
+            <li class="page-item {% if productos.number == num %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}{% if periodo %}&periodo={{ periodo }}{% endif %}">{{ num }}</a>
+            </li>
+            {% endfor %}
+            
+            {% if productos.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ productos.next_page_number }}{% if periodo %}&periodo={{ periodo }}{% endif %}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+<!-- Incluir Chart.js -->
+<script src="{% static 'js/chart.js' %}"></script>
+
+<script>
+    // Obtener el contexto del canvas
+    const ctx = document.getElementById('ingresosChart').getContext('2d');
+    
+    // Crear el gráfico
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ labels|safe }},
+            datasets: [{
+                label: 'Ingresos ($)',
+                data: {{ data|safe }},
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(153, 102, 255, 0.7)',
+                    'rgba(255, 159, 64, 0.7)',
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(255, 99, 132, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Ingresos ($)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Productos'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Top 10 Productos por Ingresos - {{ periodo_texto }}',
+                    font: {
+                        size: 16
+                    }
+                }
+            }
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const driver = window.driver.js.driver;
+        
+        // Detectar si es móvil
+        const isMobile = window.innerWidth <= 576;
+
+        // Pasos para escritorio
+        const stepsDesktop = [
+        {
+            element: '#total-productos',
+            popover: {
+                title: 'Cantidad total de productos',
+                description: 'Esta es la cantidad total de productos registrados en el sistema.',
+                position: 'bottom'
+            }
+        },
+        {
+            element: '#selector-periodo',
+            popover: {
+                title: 'Selector de periodo',
+                description: 'Permite elegir el rango de fechas para visualizar las ganancias por producto.',
+                position: 'bottom'
+            }
+        },
+        {
+            element: '#grafico',
+            popover: {
+                title: 'Gráfico de ganancias',
+                description: 'Muestra las ganancias por producto en un gráfico ordenado de mayor a menor.',
+                position: 'bottom'
+            }
+        },
+        {
+            element: '#tabla',
+            popover: {
+                title: 'Tabla de información',
+                description: 'Presenta los datos detallados de las ganancias por producto en formato tabular.',
+                position: 'bottom'
+            }
+        },
+        {
+            element: '#exportar-tabla',
+            popover: {
+                title: 'Exportar datos',
+                description: 'Genera un archivo Excel con toda la información de las ganancias por producto según el periodo seleccionado.',
+                position: 'bottom'
+            }
+        },
+        {
+            element: '#pagination',
+            popover: {
+                title: 'Paginación',
+                description: 'Permite navegar entre las diferentes páginas para visualizar todos los registros.',
+                position: 'bottom'
+            }
+        }
+        ];
+
+        // Pasos para móvil
+        const stepsMobile = [
+            {
+                element: '#total-productos',
+                popover: {
+                    title: 'Cantidad total de productos',
+                    description: 'Esta es la cantidad total de productos registrados en el sistema.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#selector-periodo',
+                popover: {
+                    title: 'Selector de periodo',
+                    description: 'Permite elegir el rango de fechas para visualizar las ganancias por producto.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#exportar-lista',
+                popover: {
+                    title: 'Exportar datos',
+                    description: 'Genera un archivo Excel con toda la información de las ganancias por producto según el periodo seleccionado.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#lista',
+                popover: {
+                    title: 'Lista de productos',
+                    description: 'Muestra los productos ordenados por sus ganancias de mayor a menor.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#pagination',
+                popover: {
+                    title: 'Paginación',
+                    description: 'Permite navegar entre las diferentes páginas para visualizar todos los registros.',
+                    position: 'bottom'
+                }
+            }
+        ];
+
+        // Inicializar el tour con los pasos correspondientes
+        const tour = driver({
+            showProgress: true,
+            showButtons: ['next', 'previous', 'close'],
+            steps: isMobile ? stepsMobile : stepsDesktop
+        });
+    
+        const startBtn = document.getElementById("start-tour");
+        if (startBtn) {
+            startBtn.addEventListener("click", function () {
+                tour.drive();
+            });
+        }
+    });
+
+    // Actualizar el tour cuando cambie el tamaño de la ventana
+    window.addEventListener('resize', function() {
+        const isMobile = window.innerWidth <= 576;
+        if (driver.instance) {
+            driver.instance.reset();
+            driver.instance.defineSteps(isMobile ? stepsMobile : stepsDesktop);
+        }
+    });
+
+</script>
+{% endblock %}

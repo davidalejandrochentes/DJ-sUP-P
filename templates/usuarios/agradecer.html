@@ -1,0 +1,23 @@
+{% extends "layout/base.html" %}
+
+{% load static %}
+
+{% block 'title'%} Agradecer {% endblock %}
+
+
+{% block 'content' %}
+<div class="container mt-5">
+    
+    <div class="d-flex justify-content-center align-items-center">
+        <div class="text-center p-5">
+            <img class="d-block mx-auto my-4" src="{% static "images/success.png" %}">
+            <h1 class="text-center mb-4">¡Felicidades! Has elegido la herramienta perfecta para impulsar tu negocio</h1>
+            <p class="lead mb-4">Estás a punto de transformar la manera en que gestionas tu empresa</p>
+            <div class="d-flex justify-content-center">
+                <a href="{% url 'inicio' %}" class="btn boton btn-lg">Comenzar Ahora</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
