@@ -4,6 +4,18 @@
 
 **sUP** es una aplicación web integral desarrollada con Django, diseñada para centralizar y optimizar la gestión de un negocio. Desde el manejo de inventario y ventas hasta la programación de agenda y reportes inteligentes, sUP provee una solución robusta y escalable.
 
+## 🎥 Video Demostración
+
+Haz clic en la siguiente imagen para ver una demostración completa de la aplicación en YouTube.
+
+<a href="https://youtu.be/j_9BkCQYhQA" target="_blank" title="Haz clic para ver el video en YouTube">
+  <img src="https://img.youtube.com/vi/j_9BkCQYhQA/hqdefault.jpg" alt="Demostración de la Agenda de Citas en YouTube" style="max-width: 600px; border: 1px solid #ddd; border-radius: 4px; padding: 5px;">
+</a>
+
+<p align="center">
+  <strong>O visita el enlace directo:</strong> <a href="https://youtu.be/j_9BkCQYhQA">https://youtu.be/j_9BkCQYhQA</a>
+</p>
+
 ---
 
 ## ✨ Características Principales
